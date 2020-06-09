@@ -1,0 +1,173 @@
+<template>
+        <div class="row justify-content-center">
+            <div class="col-lg-5 col-md-7">
+                <div class="card bg-secondary shadow border-0">
+                    <div class="card-header bg-transparent pb-5">
+                        <div class="text-muted text-center mt-2 mb-3"><small>Login</small></div>
+                        <div class="btn-wrapper text-center">
+                            <h1><i class="ni ni-circle-08 ni-4x" aria-hidden="true"></i></h1>
+                        </div>
+                    </div>
+                    <div class="card-body px-lg-5 py-lg-5">
+                        <form role="form">
+                            <base-input class="input-group-alternative mb-3"
+                                        placeholder="Correo"
+                                        addon-left-icon="ni ni-correo-83"
+                                        v-model="model.correo"
+                                        :valid="validarcorreo">
+                            </base-input>
+
+                            <base-input class="input-group-alternative"
+                                        placeholder="contraseña"
+                                        type="password"
+                                        addon-left-icon="ni ni-lock-circle-open"
+                                        v-model="model.password"
+                                        :valid="validarPassword">
+                            </base-input>
+
+                            <base-checkbox class="custom-control-alternative">
+                                <span class="text-muted">Recordarme</span>
+                            </base-checkbox>
+                            <div class="text-center">
+                                <base-button type="primary" @click="ingresarAux()" class="my-4">Ingresar</base-button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-6">
+                        <a href="#" class="text-light"><small>Olvido su contraseña?</small></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+</template>
+<script>
+import {mapState, mapMutations} from 'vuex'
+  export default {
+    name: 'login',
+    data() {
+      return {
+        model: {
+          correo: undefined,
+          password: undefined
+        }
+      }
+    },
+    computed: {
+        ...mapState(['servidorSeguridad', 'usuarios', 'servidorAcceso', 'menu']),
+        ...mapMutations(['iniciarSesion', 'consultarSesion']),
+        validarcorreo () {
+            if (this.model.correo === '') {
+                return false
+            }
+            else if (this.model.correo === undefined) {
+                return undefined
+            }
+            return true
+        },
+        validarPassword () {
+            if (this.model.password === '') {
+                return false
+            }
+            else if (this.model.password === undefined) {
+                return undefined
+            }
+            return true
+        }
+    },
+    methods: {
+        async ingresar () {
+            /*
+            const self = this
+            let usuario = {
+              nombres: 'John Jairo',
+              numeroDocumento: '10904791406'
+            }
+            this.$router.push('/perfil/')
+                axios.post(this.servidorSeguridad + 'auth/login', {
+                    ...this.model
+                })
+                .then(async function (response) {
+                    
+                    console.log('response')
+                    console.log(response)
+                    const datos = response.data.data
+                    if (!self.validarUsuarioActivo (datos)) {
+                        return false
+                    }
+                    self.$toast.success({
+                        title: 'Bienvenido',
+                        message: 'Login exitoso'
+                    })
+                    // self.menu = datos.menuExtended.hijos
+                    // console.log('menu ' + self.menu)
+                    // console.log(response.data.data)
+                    // console.log(response.data.data.menuExtended.hijos)
+                    self.$store.commit('iniciarSesion', response.data.data.menuExtended.hijos)
+                    usuario = response.data.data.usuario
+                    const sesion = (await axios.get(self.servidorAcceso + 'usuarios/usuarios/numeroDocumento/' + usuario)).data.data
+                    self.$store.commit('consultarSesion', sesion)
+                    self.$router.push('/perfil/')
+                })
+                .catch(error => {
+                    this.$toast.error({
+                        title: error.response.data.message,
+                        message: 'La contraseña o correo es incorrecto'
+                    })
+                    return
+                })
+            */
+        },
+        ingresarAux () {
+            const self = this
+            if (this.model.password === '' || this.model.correo === '' || this.model.password === undefined || this.model.correo === undefined) {
+              this.$toast.info({
+                title: 'Campos Vacios',
+                message: 'Por favor ingrese un correo y una contraseña valida'
+              })
+              return
+            }
+            const valido = this.usuarios.find(function (u) {
+              return u.correo === self.model.correo && u.password === self.model.password
+            })
+            if (valido === undefined) {
+              this.$toast.info({
+                title: 'Login Fallido',
+                message: 'El correo o la contraseña no son de un usuario existente'
+              })
+              return
+            }
+            self.$toast.success({
+                title: 'Bienvenido',
+                message: 'Login exitoso'
+            })
+            const correo = valido.correo
+            this.$store.commit('cambiarEstadoCuenta', correo)
+            // this.$store.commit('sesionActiva', valido)
+            this.$store.commit('consultarSesion', valido)
+            this.$router.push('/perfil')
+        },
+        limpiarCampos () {
+            this.model.password = ''
+            this.model.correo = ''
+        },
+        validarUsuarioActivo (datos) {
+            if (datos.menuExtended.estado !== 'ACTIVO') {
+                this.$toast.error({
+                    title: 'Login Fallido',
+                    message: 'Este usuario esta inactivo para hacer login'
+                })
+                return false
+            } else {
+                return true
+            }
+        }
+    },
+    created () {
+        this.$store.commit('cerrarSesion')
+    }
+  }
+</script>
+<style>
+</style>
