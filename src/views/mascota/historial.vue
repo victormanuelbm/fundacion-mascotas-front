@@ -82,8 +82,10 @@ import 'flatpickr/dist/flatpickr.css'
             descripcion: '',
             observacion: '',
             diponibilidadMascota: '',
-            idMascota: '',
-        },
+            idMascota: ''
+        }
+        }
+    }, 
     computed: {
         validarDescripcion () {
             if (this.model.descripcion === '') {
