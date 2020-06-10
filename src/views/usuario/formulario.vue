@@ -61,7 +61,7 @@
                                             </div>
                                             <div class="col-lg-4">
                                                 <base-input alternative=""
-                                                            label="Correo"
+                                                            label="Correo1"
                                                             placeholder="heystyles@example.com"
                                                             input-classes="form-control-alternative"
                                                             v-model="model.correo"
