@@ -147,8 +147,8 @@ import 'flatpickr/dist/flatpickr.css'
             { idFundacion: '3', nombre: 'El Espanta-Tiburones' }
         ],
         especies: [
-            { idEspecie: '1', nombre: 'Mamifero Heterosexual' },
-            { idEspecie: '2', nombre: 'Reptil' },
+            { idEspecie: '1', nombre: 'ave' },
+            { idEspecie: '2', nombre: 'mamifero' },
             { idEspecie: '3', nombre: 'Pez' }
         ],
         veterinarias: [
