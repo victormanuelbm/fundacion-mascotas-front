@@ -31,6 +31,11 @@
                                 <template slot="fundacion" slot-scope="data">
                                     {{ (fundaciones.find(fundacion => { return fundacion.idFundacion === data.item.idFundacion } )).nombre }}
                                 </template>
+                                <template slot="historial" slot-scope="data">
+                                    <base-button outline type="secondary" @click="formularioHistorial(data.item)" >
+                                    <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                                    </base-button>
+                                </template>
                             </b-table>
                             <div class="text-center" v-if="loader">
                                 <vue-loaders name="ball-beat" color="blue" scale="2" class="text-center" />
@@ -60,7 +65,8 @@ import 'flatpickr/dist/flatpickr.css'
             { key: 'sexoMascota', label: ' Sexo' },
             { key: 'fundacion', label: 'Fundacion' },
             { key: 'fechaIngreso', label: 'Ingreso' },
-            { key: 'disponibilidadMascota', label: '¿Adoptable?'}
+            { key: 'disponibilidadMascota', label: '¿Adoptable?'},
+            { key: 'historial', label: 'Historial'}
         ],
         fundaciones: [
             { idFundacion: '1', nombre: 'Fundacion las Puertas del Cielo' },
@@ -102,6 +108,9 @@ import 'flatpickr/dist/flatpickr.css'
                     mascota: item[0]
                 }
             })
+        },
+        formularioHistorial (mascota) {
+            console.log(mascota)
         }
     },
     watch: {

@@ -32,6 +32,22 @@ export default new Router({
           name: 'modificarMascota',
           component: () => import('./views/mascota/formulario.vue'),
           props: (route) => ({ mascota: route.params.mascota })
+        },
+        {
+          path: 'usuario/registro',
+          name: 'registroUsuario',
+          component: () => import('./views/usuario/formulario.vue')
+        },
+        {
+          path: 'usuario/',
+          name: 'usuario',
+          component: () => import('./views/usuario/index.vue')
+        },
+        {
+          path: 'usuario/modificar',
+          name: 'modificarUsuario',
+          component: () => import('./views/usuario/formulario.vue'),
+          props: (route) => ({ usuario: route.params.usuario })
         }
       ]
     },
