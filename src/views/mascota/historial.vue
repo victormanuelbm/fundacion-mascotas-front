@@ -13,7 +13,7 @@
                         </div>
                         <template>
                             <form @submit.prevent>
-                                <div class="pl-lg-4">
+                                <div class="pl-lg-4 pr-lg-4">
                                     <div class="row">
                                         <div class="col-lg-4">
                                             <base-input alternative=""
@@ -29,6 +29,18 @@
                                                             v-model="model.fechaRevision">
                                                 </flat-picker>
                                             </base-input>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div>
+                                            <b-form-textarea
+                                                id="textarea-rows"
+                                                placeholder="Descripcion"
+                                                rows="8"
+                                            ></b-form-textarea>
+                                        </div>
+                                    </div>
+                                    <div class="row">
                                         <div class="col-lg-4">
                                             <base-input alternative=""
                                                         label="Descripcion"
@@ -81,7 +93,6 @@ import 'flatpickr/dist/flatpickr.css'
             fechaRevision: '',
             descripcion: '',
             observacion: '',
-            diponibilidadMascota: '',
             idMascota: ''
         }
         }

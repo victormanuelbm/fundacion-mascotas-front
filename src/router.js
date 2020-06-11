@@ -59,7 +59,17 @@ const router = new Router({
           meta: { requiresAuth: true }
         },
         {
+<<<<<<< HEAD
           path: '/usuario',
+=======
+          path: 'mascota/historial',
+          name: 'historialMascota',
+          component: () => import('./views/mascota/historial.vue'),
+          props: (route) => ({ mascota: route.params.mascota })
+        },
+        {
+          path: 'usuario/',
+>>>>>>> Historial mascota form
           name: 'usuario',
           component: () => import('./views/usuario/index.vue'),
           meta: { requiresAuth: true }

@@ -143,21 +143,8 @@ import VueUploadMultipleImage from 'vue-upload-multiple-image'
             extension: ''
         },
         imagen: undefined,
-<<<<<<< HEAD
         fundaciones: [],
         especies: [],
-=======
-        fundaciones: [
-            { idFundacion: '1', nombre: 'Fundacion las Puertas del Cielo' },
-            { idFundacion: '2', nombre: 'Lo que el Agua se Llevo' },
-            { idFundacion: '3', nombre: 'El Espanta-Tiburones' }
-        ],
-        especies: [
-            { idEspecie: '1', nombre: 'ave' },
-            { idEspecie: '2', nombre: 'mamifero' },
-            { idEspecie: '3', nombre: 'Pez' }
-        ],
->>>>>>> prueba mamifero
         veterinarias: [
             { idVeterinaria: '1', nombre: 'Vec-terinaria' },
             { idVeterinaria: '2', nombre: 'Pet-terinaria' }
