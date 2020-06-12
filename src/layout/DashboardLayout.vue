@@ -63,7 +63,8 @@
         this.$router.push('/')
         return
       } else {
-        axios.defaults.headers.common['usuario'] = this.sesionActiva.numeroDocumento
+        // axios.defaults.headers.common['usuario'] = this.sesionActiva.numeroDocumento
+        // axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*'
       }
     }
   };

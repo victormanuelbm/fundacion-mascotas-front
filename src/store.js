@@ -10,6 +10,7 @@ export default new Vuex.Store({
         servidorProducto: 'http://ec2-54-234-226-153.compute-1.amazonaws.com:9030/',
         servidorFactura: 'http://ec2-54-234-226-153.compute-1.amazonaws.com:9040/',
         servidorNotificacion: 'http://ec2-54-234-226-153.compute-1.amazonaws.com:9060/notificacion/',
+        servidor: 'http://3.211.250.73/adopet-ufps/controller/',
         menu: undefined,
         usuarios: [
             {
@@ -118,7 +119,5 @@ export default new Vuex.Store({
             state.sesionActiva = usuario
         }
     },
-    actions: {
-  
-    }
+    actions: {}
 })

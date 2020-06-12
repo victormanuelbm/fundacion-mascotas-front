@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import DashboardLayout from '@/layout/DashboardLayout'
+import IndexLayout from '@/layout/IndexLayout'
 import AuthLayout from '@/layout/AuthLayout'
 Vue.use(Router)
 
@@ -54,7 +55,7 @@ export default new Router({
     {
       path: '/',
       redirect: 'login',
-      component: AuthLayout,
+      component: IndexLayout,
       children: [
         {
           path: '/login',

@@ -1,6 +1,8 @@
 <template>
-        <div class="row justify-content-center">
-            <div class="col-lg-5 col-md-7">
+    <div class="container-fluid mt--5">
+            <div class="row">
+                <div class="col-xl-12 order-xl-1">
+                    <div class="col-lg-5 col-md-7">
                 <div class="card bg-secondary shadow border-0">
                     <div class="card-header bg-transparent pb-5">
                         <div class="text-muted text-center mt-2 mb-3"><small>Login</small></div>
@@ -40,10 +42,13 @@
                     </div>
                 </div>
             </div>
+                </div>
+            </div>
         </div>
 </template>
 <script>
 import {mapState, mapMutations} from 'vuex'
+import axios from 'axios'
   export default {
     name: 'login',
     data() {
@@ -120,6 +125,12 @@ import {mapState, mapMutations} from 'vuex'
             */
         },
         ingresarAux () {
+    
+            axios.get('http://3.211.250.73/adopet-ufps/controller/MascotaController_ListAll.php').then(function (response) {
+                console.log(response)
+            }).catch(function (error) {
+                console.log(error)
+            })
             const self = this
             if (this.model.password === '' || this.model.correo === '' || this.model.password === undefined || this.model.correo === undefined) {
               this.$toast.info({

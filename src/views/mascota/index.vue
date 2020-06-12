@@ -49,6 +49,9 @@
 </template>
 <script>
 import 'flatpickr/dist/flatpickr.css'
+import axios from 'axios'
+import {mapState} from 'vuex'
+
   export default {
     components: {},
     name: 'index',
@@ -85,7 +88,9 @@ import 'flatpickr/dist/flatpickr.css'
         loader: false
       }
     },
-    computed: {},
+    computed: {
+        ...mapState(['servidor'])
+    },
     methods: {
         async listar () {},
         abrirFormularioRegistro () {
@@ -111,13 +116,17 @@ import 'flatpickr/dist/flatpickr.css'
         },
         formularioHistorial (mascota) {
             console.log(mascota)
+        },
+        async apiMascotas () {
+            this.cargando = false
+            // this.itemsMascota = []
         }
     },
     watch: {
     },
     created: async function() {
         this.loader = true
-        await this.listar()
+        await this.apiMascotas()
         this.loader = false
     }
   }
