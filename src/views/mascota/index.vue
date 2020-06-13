@@ -119,6 +119,19 @@ import {mapState} from 'vuex'
         },
         async apiMascotas () {
             this.cargando = false
+            this.itemsMascota = []
+            axios.get('http://3.211.250.73/adopet-ufps/controller/MascotaController_ListAll.php').then(response => {
+                if (response.data.result) {
+                    this.$toast.error({
+                        title: 'Información',
+                        message: response.data.result
+                    })
+                } else {
+                    this.itemsMascota = response.data
+                } 
+            }).catch(function (error) {
+                console.log(error)
+            })
             // this.itemsMascota = []
         }
     },

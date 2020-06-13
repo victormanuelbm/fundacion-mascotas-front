@@ -111,6 +111,7 @@
 <script>
 import flatPicker from 'vue-flatpickr-component'
 import 'flatpickr/dist/flatpickr.css'
+import axios from 'axios'
   export default {
     components: {
       flatPicker
@@ -127,11 +128,11 @@ import 'flatpickr/dist/flatpickr.css'
         model: {
             idMascota: undefined,
             nombreMascota: '',
+            idEspecie: '',
             edadMascota: '',
             sexoMascota: '',
-            diponibilidadMascota: '',
+            disponibilidadMascota: '',
             fechaIngreso: '',
-            fechaSalida: '',
             idFundacion: '',
             idVeterinaria: ''
         },
@@ -156,7 +157,7 @@ import 'flatpickr/dist/flatpickr.css'
             { idVeterinaria: '2', nombre: 'Pet-terinaria' }
         ],
         tiposSexo: ['Asexual', 'Macho', 'Hembra'],
-        tiposDisponibilidad: ['Disponible', 'No Disponible'],
+        tiposDisponibilidad: ['1', '0'],
       }
     },
     computed: {
@@ -244,12 +245,22 @@ import 'flatpickr/dist/flatpickr.css'
                     message: 'Existen campos vacios o no validos dentro del formulario'
                 })
                 return
-            } else {
+            }
+            axios.post('http://3.211.250.73/adopet-ufps/controller/MascotaController_Insert.php', this.model)
+            .then(response => {
                 this.$toast.success({
                     title: 'Registro Exitoso',
                     message: 'Se registro la mascota correctamente'
                 })
-            }
+            })
+            .catch(error => {
+                this.$toast.Error({
+                    title: 'Error',
+                    message: 'No se puede guardar cambios de la mascota'
+                })
+                return
+            });
+            
         },
         validacion () {
             if (this.validarNombre && this.validarEdad && this.validarSexo && this.validarDisponibilidad
@@ -257,7 +268,8 @@ import 'flatpickr/dist/flatpickr.css'
                 return true
             }
             return false
-        }
+        },
+
     },
     created: function() {
         if (this.mascota) {

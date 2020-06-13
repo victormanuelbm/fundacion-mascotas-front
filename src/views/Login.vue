@@ -125,12 +125,6 @@ import axios from 'axios'
             */
         },
         ingresarAux () {
-    
-            axios.get('http://ec2-3-211-250-73.compute-1.amazonaws.com:80/adopet-ufps/controller/MascotaController_ListAll.php').then(function (response) {
-                console.log(response)
-            }).catch(function (error) {
-                console.log(error)
-            })
             const self = this
             if (this.model.password === '' || this.model.correo === '' || this.model.password === undefined || this.model.correo === undefined) {
               this.$toast.info({
