@@ -126,7 +126,7 @@ import axios from 'axios'
         },
         ingresarAux () {
     
-            axios.get('http://3.211.250.73/adopet-ufps/controller/MascotaController_ListAll.php').then(function (response) {
+            axios.get('http://ec2-3-211-250-73.compute-1.amazonaws.com:80/adopet-ufps/controller/MascotaController_ListAll.php').then(function (response) {
                 console.log(response)
             }).catch(function (error) {
                 console.log(error)
