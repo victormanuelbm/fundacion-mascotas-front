@@ -22,25 +22,15 @@
                             <b-table striped
                                      hover
                                      selectable
-                                     :fields="camposTablaFundacion"
-                                     :items="itemsFundacion"
+                                     :fields="camposTablaMascota"
+                                     :items="itemsMascota"
                                      @row-selected="seleccionado"
                                      responsive="sm"
                                      selected-variant="active"
-                                     :small="true"
                                      select-mode="single">
-                                <template slot="opciones" slot-scope="data">
-                                    <base-button size="sm" outline type="danger" @click="eliminarFundacion(data.item)" >
-                                        <i class="fa fa-trash" aria-hidden="true"></i>
-                                    </base-button>
-                                    <base-button size="sm" outline type="info" @click="gestionarAlbergues(data.item)" >
-                                        <i class="fa fa-list" aria-hidden="true"></i>
-                                    </base-button>
-                                </template>
                                 <template slot="fundacion" slot-scope="data">
                                     {{ (fundaciones.find(fundacion => { return fundacion.idFundacion === data.item.idFundacion } )).nombre }}
                                 </template>
-
                             </b-table>
                             <div class="text-center" v-if="loader">
                                 <vue-loaders name="ball-beat" color="blue" scale="2" class="text-center" />
@@ -54,29 +44,42 @@
 </template>
 <script>
 import 'flatpickr/dist/flatpickr.css'
-import axios from 'axios'
-import {mapState} from 'vuex'
-
   export default {
     components: {},
     name: 'index',
     data() {
       return {
-        itemsFundacion: [],
-        camposTablaFundacion: [
+        itemsMascota: [
+            { nombreFundacion: 'Animalitos Felices', direccionFundacion: 'Calle 20 # 10', telefonoFundacion: '58994748', nit: '35276374', correo: 'fundacion1@gmail.com', nombrepropietario: 'Diego Navas', idUsuario: 1 },
+            { nombreFundacion: 'perritos y gaticos', direccionFundacion: 'av 6 # 7', telefonoFundacion: '5993838', nit: '89045805', correo: 'fundacion2@gmail.com', nombrepropietario: 'Jorge Mojica', idUsuario: 2 },
+            { nombreFundacion: 'animals', direccionFundacion: 'clle 7 # 8', telefonoFundacion: '5772939', nit: '5493850', correo: 'fundacion3@gmail.com', nombrepropietario: 'Richard Acevedo', idUsuario: 3 },
+        ],
+        camposTablaMascota: [
             { key: 'nombreFundacion', label: 'Fundación' },
             { key: 'direccionFundacion', label: 'Dirección' },
             { key: 'telefonoFundacion', label: ' Teléfono' },
-            { key: 'correo', label: 'Correo' },
-            { key: 'opciones', label: 'Opciones'}
+            { key: 'nit', label: 'Nit' },
+            { key: 'correo', label: 'Correo Electrónico' },
+            { key: 'nombrepropietario', label: 'Propietario?'}
         ],
-        
+        fundaciones: [
+            { idFundacion: '1', nombre: 'Fundacion las Puertas del Cielo' },
+            { idFundacion: '2', nombre: 'Lo que el Agua se Llevo' },
+            { idFundacion: '3', nombre: 'El Espanta-Tiburones' }
+        ],
+        especies: [
+            { idEspecie: '1', nombre: 'Mamifero Heterosexual' },
+            { idEspecie: '2', nombre: 'Reptil' },
+            { idEspecie: '3', nombre: 'Pez' }
+        ],
+        veterinarias: [
+            { idVeterinaria: '1', nombre: 'Vec-terinaria' },
+            { idVeterinaria: '2', nombre: 'Pet-terinaria' }
+        ],
         loader: false
       }
     },
-    computed: {
-        ...mapState(['servidor'])
-    },
+    computed: {},
     methods: {
         async listar () {},
         abrirFormularioRegistro () {
@@ -99,56 +102,13 @@ import {mapState} from 'vuex'
                     fundacion: item[0]
                 }
             })
-        },
-        async apiFundacion () {
-            this.cargando = false
-            this.itemsFundacion = []
-            axios.get(this.servidor + 'FundacionController_ListAll.php').then(response => {
-                if (response.data.result) {
-                    this.$toast.error({
-                        title: 'Información',
-                        message: response.data.result
-                    })
-                } else {
-                    response.data.forEach(fundacion => {
-                        if (!fundacion.msg) {
-                            this.itemsFundacion.push(fundacion)
-                        }
-                    })
-                } 
-            }).catch(() => {})
-            // this.itemsMascota = []
-        },
-        async eliminarFundacion (fundacion) {
-            await axios.post(this.servidor + 'FundacionController_Delete.php', {
-                idFundacion: fundacion.idFundacion
-            }).then(() => {
-                this.$toast.success({
-                    title: 'Eliminación Exitosa',
-                    message: 'Se elimino correctamente.'
-                })
-                this.apiFundacion()
-            }).catch(() => {
-                this.$toast.error({
-                    title: 'Error en la Eliminación',
-                    message: 'No se pudo eliminar la fundacion.'
-                })
-            })
-        },
-        gestionarAlbergues (fundacion) {
-            this.$router.push({
-                name: 'albergues',
-                params: {
-                    fundacion: fundacion
-                }
-            })
         }
     },
     watch: {
     },
     created: async function() {
         this.loader = true
-        await this.apiFundacion()
+        await this.listar()
         this.loader = false
     }
   }

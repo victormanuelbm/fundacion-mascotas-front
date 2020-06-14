@@ -78,6 +78,7 @@ const router = new Router({
           path: 'usuario/modificar',
           name: 'modificarUsuario',
           component: () => import('./views/usuario/formulario.vue'),
+<<<<<<< HEAD
           props: (route) => ({ usuario: route.params.usuario }),
           meta: { requiresAuth: true }
         },
@@ -138,6 +139,25 @@ const router = new Router({
           component: () => import('./views/fundacion/formulario.vue'),
           props: (route) => ({ fundacion: route.params.fundacion }),
           meta: { requiresAuth: true }
+=======
+          props: (route) => ({ usuario: route.params.usuario })
+        },
+        {
+          path: 'fundacion/registro',
+          name: 'registroFundacion',
+          component: () => import('./views/fundacion/formulario.vue')
+        },
+        {
+          path: 'fundacion/',
+          name: 'fundacion',
+          component: () => import('./views/fundacion/index.vue')
+        },
+        {
+          path: 'fundacion/modificar',
+          name: 'modificarFundacion',
+          component: () => import('./views/fundacion/formulario.vue'),
+          props: (route) => ({ fundacion: route.params.fundacion })
+>>>>>>> Vista de Fundacion
         }
       ]
     },

@@ -44,10 +44,14 @@
           { nombre: 'Perfil', icono: 'fa fa-user', path: '/perfil' },
           { nombre: 'Mascota', icono: 'fa fa-paw', path: '/mascota' },
           { nombre: 'Usuario', icono: 'fa fa-users', path: '/usuario' },
+<<<<<<< HEAD
           { nombre: 'donacion', icono: 'fa fa-gift', path: '/donacion' },
           { nombre: 'albergue', icono: 'fa fa-hospital', path: '/albergue' },
           { nombre: 'fundacion', icono: 'fa fa-building', path: '/fundacion' }
 
+=======
+          { nombre: 'fundacion', icono: 'fa fa-building', path: '/fundacion' }
+>>>>>>> Vista de Fundacion
         ]
       };
     },
