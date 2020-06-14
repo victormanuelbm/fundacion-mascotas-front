@@ -125,7 +125,6 @@ import foto from './foto'
             })
         },
         formularioHistorial (mascota) {
-<<<<<<< HEAD
             console.log(mascota)
         },
         async apiMascotas () {
@@ -192,12 +191,6 @@ import foto from './foto'
                             this.especies.push(especie)
                         }
                     })
-=======
-            this.$router.push({
-                name: 'historialMascota',
-                params: {
-                    mascota: mascota[0]
->>>>>>> Historial mascota form
                 }
             })
         }

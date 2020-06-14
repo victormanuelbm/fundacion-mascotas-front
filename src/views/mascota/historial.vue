@@ -15,10 +15,18 @@
                             <form @submit.prevent>
                                 <div class="pl-lg-4 pr-lg-4">
                                     <div class="row">
+                                        <!--<div class="col-lg-4">
+                                            <base-input alternative=""
+                                                        label="Nombre"
+                                                        placeholder="Nombre de la Mascota"
+                                                        input-classes="form-control-alternative"
+                                                        v-model="model.nombreMascota"
+                                                        :valid="validarNombre"
+                                            />
+                                        </div>-->
                                         <div class="col-lg-4">
                                             <base-input alternative=""
-                                                        label="Fecha de Revision"
-                                                        placeholder="Fecha de Revision"
+                                                        label="Fecha de Revisión"
                                                         input-classes="form-control-alternative"
                                                         :valid="validarFechaRevision">
                                                 <flat-picker slot-scope="{focus, blur}"
@@ -26,34 +34,33 @@
                                                             @on-close="blur"
                                                             :config="{allowInput: true}"
                                                             class="form-control datepicker"
+                                                            placeholder="Fecha de Revisión"
                                                             v-model="model.fechaRevision">
                                                 </flat-picker>
                                             </base-input>
                                         </div>
                                     </div>
-                                    <div class="row">
-                                        <div>
-                                            <b-form-textarea
-                                                id="textarea-rows"
-                                                placeholder="Descripcion"
-                                                rows="8"
-                                            ></b-form-textarea>
-                                        </div>
-                                    </div>
+                                </div>
+                                <div class="pl-lg-4 pr-lg-4">
                                     <div class="row">
                                         <div class="col-lg-4">
                                             <base-input alternative=""
-                                                        label="Descripcion"
-                                                        placeholder="Descripcion"
+                                                        label="Descripción"
                                                         input-classes="form-control-alternative"
-                                                        v-model="model.descripcion"
-                                                        :valid="validarDescripcion"
-                                            />
+                                                        :valid="validarDescripcion">
+                                                <b-form-textarea
+                                                    alternative=""
+                                                    placeholder="Descripción del historial"
+                                                    v-model="model.descripcion"
+                                                    rows="6"
+                                                    no-resize
+                                                ></b-form-textarea>
+                                            </base-input>
                                         </div>
                                         <div class="col-lg-4">
                                             <base-input alternative=""
-                                                        label="Observacion"
-                                                        placeholder="Observacion"
+                                                        label="Observación"
+                                                        placeholder="Observación"
                                                         input-classes="form-control-alternative"
                                                         v-model="model.observacion"
                                                         :valid="validarObservacion"
@@ -79,7 +86,7 @@ import 'flatpickr/dist/flatpickr.css'
     components: {
       flatPicker
     },
-    name: 'registro',
+    name: 'historial',
     props: {
         mascota: {
             type: Object,
@@ -117,10 +124,10 @@ import 'flatpickr/dist/flatpickr.css'
             return true
         },
         validarFechaRevision () {
-            if (this.model.validarFechaRevision === '') {
+            if (this.model.fechaRevision === '') {
                 return false
             }
-            else if (this.model.validarFechaRevision === undefined) {
+            else if (this.model.fechaRevision === undefined) {
                 return undefined
             }
             return true
