@@ -48,6 +48,22 @@ export default new Router({
           name: 'modificarUsuario',
           component: () => import('./views/usuario/formulario.vue'),
           props: (route) => ({ usuario: route.params.usuario })
+        },
+        {
+          path: 'vinculacion/registro',
+          name: 'registroVinculacion',
+          component: () => import('./views/vinculacion/formulario.vue')
+        },
+        {
+          path: 'vinculacion/',
+          name: 'vinculacion',
+          component: () => import('./views/vinculacion/index.vue')
+        },
+        {
+          path: 'vinculacion/modificar',
+          name: 'modificarVinculacion',
+          component: () => import('./views/vinculacion/formulario.vue'),
+          props: (route) => ({ vinculacion: route.params.vinculacion })
         }
       ]
     },
