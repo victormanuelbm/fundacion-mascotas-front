@@ -244,7 +244,15 @@ import foto from './foto'
             return true
         }
     },
-    watch: {},
+    watch: {
+        sesionActiva (value) {
+            if (value) {
+                this.model = {
+                    ...value
+                }
+            }
+        }
+    },
     methods: {
         async onFileSelected() {},
         async actualizarFoto () {},
@@ -275,11 +283,8 @@ import foto from './foto'
         /*
             Esto esta aqui para capturar la informacion del usuario que inicio session
         */
-        /*if (this.sesionActiva) {
-            this.model = {
-                ...this.sesionActiva
-            }
-        }*/
+        console.log('this.sesionActiva')
+        console.log(this.sesionActiva)
         this.loader = false
     }
   }

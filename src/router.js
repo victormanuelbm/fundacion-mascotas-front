@@ -14,7 +14,7 @@ const router = new Router({
       path: '/auth0callback',
       name: 'auth0callback',
       // redirect: 'Perfil',
-      component: DashboardLayout,
+      component: IndexLayout,
       children: [
         {
           path: '/auth0callback',
@@ -26,7 +26,7 @@ const router = new Router({
     {
       path: '/layout',
       // redirect: 'perfil',
-      component: DashboardLayout,
+      component: IndexLayout,
       children: [
         {
           path: '/perfil',
@@ -97,7 +97,6 @@ router.beforeEach((to, from, next) => {
   let routerAuthcheck = false
   if (localStorage.getItem('access_token') && localStorage.getItem('id_token')
       && localStorage.getItem('expires_at')) {
-    console.log('------------------------------')
     const expiresAt = JSON.parse(localStorage.getItem('expires_at'))
     routerAuthcheck = new Date().getTime() < expiresAt;
     console.log(new Date().getTime())
