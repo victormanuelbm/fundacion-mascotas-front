@@ -29,11 +29,14 @@
                                      selected-variant="active"
                                      select-mode="single">
                                 <template slot="fundacion" slot-scope="data">
-                                    {{ (fundaciones.find(fundacion => { return fundacion.idFundacion === data.item.idFundacion } )).nombre }}
+                                    {{ (fundaciones.find(fundacion => { return fundacion.idFundacion == data.item.idFundacion } )) }}
                                 </template>
                                 <template slot="historial" slot-scope="data">
                                     <base-button outline type="secondary" @click="formularioHistorial(data.item)" >
                                     <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                                    </base-button>
+                                    <base-button outline type="danger" @click="eliminarMascota(data.item)" >
+                                    <i class="fa fa-trash" aria-hidden="true"></i>
                                     </base-button>
                                 </template>
                             </b-table>
@@ -67,8 +70,6 @@ import {mapState} from 'vuex'
             { key: 'edadMascota', label: 'Edad ' },
             { key: 'sexoMascota', label: ' Sexo' },
             { key: 'fundacion', label: 'Fundacion' },
-            { key: 'fechaIngreso', label: 'Ingreso' },
-            { key: 'disponibilidadMascota', label: '¿Adoptable?'},
             { key: 'historial', label: 'Historial'}
         ],
         fundaciones: [
@@ -120,7 +121,7 @@ import {mapState} from 'vuex'
         async apiMascotas () {
             this.cargando = false
             this.itemsMascota = []
-            axios.get('http://3.211.250.73/adopet-ufps/controller/MascotaController_ListAll.php').then(response => {
+            axios.get(this.servidor + 'MascotaController_ListAll.php').then(response => {
                 if (response.data.result) {
                     this.$toast.error({
                         title: 'Información',
@@ -133,6 +134,21 @@ import {mapState} from 'vuex'
                 console.log(error)
             })
             // this.itemsMascota = []
+        },
+        async eliminarMascota (mascota) {
+            await axios.get(this.servidor + 'MascotaController_Delete.php?idMascota=' + mascota.idMascota).then(response => {
+                this.$toast.success({
+                    title: 'Eliminación Exitosa',
+                    message: 'Se elimino correctamente.'
+                })
+                this.apiMascotas()
+            }).catch(function (error) {
+                console.log(error)
+                this.$toast.error({
+                    title: 'Error en la Eliminación',
+                    message: 'No se pudo eliminar la mascota.'
+                })
+            })
         }
     },
     watch: {

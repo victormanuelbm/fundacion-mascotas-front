@@ -48,13 +48,6 @@
                                             </base-input>
                                         </div>
                                         <div class="col-lg-4">
-                                            <base-input label="Disponibilidad" :valid="validarDisponibilidad">
-                                                <select class="form-control" v-model="model.disponibilidadMascota" >
-                                                    <option v-for="disponibilidad in tiposDisponibilidad" :key="disponibilidad" :value="disponibilidad" >{{ disponibilidad }}</option>
-                                                </select>
-                                            </base-input>
-                                        </div>
-                                        <div class="col-lg-4">
                                             <base-input label="Fundación" :valid="validarFundacion">
                                                 <select class="form-control" v-model="model.idFundacion">
                                                     <option v-for="fundacion in fundaciones" :key="fundacion.idFundacion" :value="fundacion.idFundacion" >{{ fundacion.nombre }}</option>
@@ -112,6 +105,7 @@
 import flatPicker from 'vue-flatpickr-component'
 import 'flatpickr/dist/flatpickr.css'
 import axios from 'axios'
+import {mapState} from 'vuex'
   export default {
     components: {
       flatPicker
@@ -161,6 +155,7 @@ import axios from 'axios'
       }
     },
     computed: {
+        ...mapState(['servidor']),
         validarNombre () {
             if (this.model.nombreMascota === '') {
                 return false
@@ -184,15 +179,6 @@ import axios from 'axios'
                 return false
             }
             else if (this.model.sexoMascota === undefined) {
-                return undefined
-            }
-            return true
-        },
-        validarDisponibilidad () {
-            if (this.model.disponibilidadMascota === '' ) {
-                return false
-            }
-            else if (this.model.disponibilidadMascota === undefined) {
                 return undefined
             }
             return true
@@ -237,8 +223,8 @@ import axios from 'axios'
     methods: {
         ingresoFile () {},
         subirImagen () {},
-        async actualizarFoto () {},
         async guardarCambios () {
+            console.log(this.mascota)
             if (!this.validacion()) {
                 this.$toast.info({
                     title: 'No se puede guardar cambios de la mascota',
@@ -246,25 +232,43 @@ import axios from 'axios'
                 })
                 return
             }
-            axios.post('http://3.211.250.73/adopet-ufps/controller/MascotaController_Insert.php', this.model)
-            .then(response => {
-                this.$toast.success({
-                    title: 'Registro Exitoso',
-                    message: 'Se registro la mascota correctamente'
+            console.log(this.mascota)
+            if (this.mascota) {
+                axios.put(this.servidor + 'MascotaController_Edit.php', this.model)
+                .then(response => {
+                    this.$toast.success({
+                        title: 'Modificación Exitosa',
+                        message: 'Se modifico la mascota correctamente'
+                    })
                 })
-            })
-            .catch(error => {
-                this.$toast.Error({
-                    title: 'Error',
-                    message: 'No se puede guardar cambios de la mascota'
+                .catch(error => {
+                    this.$toast.Error({
+                        title: 'Error',
+                        message: 'No se puede modificar cambios de la mascota'
+                    })
+                    return
+                });
+            } else {
+                axios.post(this.servidor + 'MascotaController_Insert.php', this.model)
+                .then(response => {
+                    this.$toast.success({
+                        title: 'Registro Exitoso',
+                        message: 'Se registro la mascota correctamente'
+                    })
                 })
-                return
-            });
-            
+                .catch(error => {
+                    this.$toast.Error({
+                        title: 'Error',
+                        message: 'No se puede guardar cambios de la mascota'
+                    })
+                    return
+                });
+            }
+            this.$router.push('/mascota')
         },
         validacion () {
-            if (this.validarNombre && this.validarEdad && this.validarSexo && this.validarDisponibilidad
-            && this.validarFundacion && this.validarEspecie && this.validarVeterinaria && this.validarFechaIngreso) {
+            if (this.validarNombre && this.validarEdad && this.validarSexo && this.validarFundacion
+                    && this.validarEspecie && this.validarVeterinaria && this.validarFechaIngreso) {
                 return true
             }
             return false
