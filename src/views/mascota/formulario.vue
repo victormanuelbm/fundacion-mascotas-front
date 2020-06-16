@@ -81,11 +81,11 @@
                                                         label="Foto de la Mascota"
                                                         input-classes="form-control-alternative">
                                                 <b-form-file
-                                                    @change="ingresoFile"
                                                     class="btn btn-primary btn-sm" plain
-                                                    accept=".jpg, .png, .gif, .jpeg"
+                                                    accept="image/*"
                                                     placeholder="Escojer foto..."
-                                                    browse-text="Buscar"/>
+                                                    browse-text="Buscar"
+                                                     @change="getImage"/>
                                             </base-input>
                                         </div>
                                     </div>
@@ -127,7 +127,8 @@ import {mapState} from 'vuex'
             sexoMascota: '',
             fechaIngreso: '',
             idFundacion: '',
-            idVeterinaria: ''
+            idVeterinaria: '',
+            file: ''
         },
         fotografia: {
             base64: '',
@@ -220,6 +221,10 @@ import {mapState} from 'vuex'
         },
     },
     methods: {
+        getImage(event){
+            //Asignamos la imagen a  nuestra data
+            this.model.file = event.target.files[0];
+        },
         ingresoFile () {},
         subirImagen () {},
         async guardarCambios () {
