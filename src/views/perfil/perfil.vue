@@ -246,6 +246,9 @@ import foto from './foto'
     },
     watch: {
         sesionActiva (value) {
+            console.log('-------------')
+            console.log(value)
+            console.log('-------------')
             if (value) {
                 this.model = {
                     ...value

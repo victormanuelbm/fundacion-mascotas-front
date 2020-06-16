@@ -141,10 +141,10 @@ export default new Vuex.Store({
                 if (authResult && authResult.accessToken && authResult.idToken) {
                     const expiresAt = JSON.stringify(authResult.expiresIn * 1000 + new Date().getTime())
                     this.state.sesionActiva = {
-                        nombreUsuario: authResult.given_name,
-                        apellidoUsuario: authResult.family_name,
-                        correo: authResult.email,
-                        foto: authResult.picture
+                        nombreUsuario: authResult.idTokenPayload.given_name,
+                        apellidoUsuario: authResult.idTokenPayload.family_name,
+                        correo: authResult.idTokenPayload.email,
+                        foto: authResult.idTokenPayload.picture
                     }
                     console.log(this.state)
                     localStorage.setItem('access_token', authResult.accessToken)

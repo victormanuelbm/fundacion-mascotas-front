@@ -40,6 +40,10 @@
                             <i class="ni ni-bell-55"></i>
                             <span>Notificaciones</span>
                         </router-link>
+                        <router-link to="/mascota" class="dropdown-item">
+                            <i class="ni ni-bell-55"></i>
+                            <span>Mascotas</span>
+                        </router-link>
                         <div class="dropdown-divider"></div>
                         <router-link to="/" class="dropdown-item">
                             <i class="ni ni-user-run"></i>
