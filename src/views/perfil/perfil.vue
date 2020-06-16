@@ -275,11 +275,11 @@ import foto from './foto'
         /*
             Esto esta aqui para capturar la informacion del usuario que inicio session
         */
-        if (this.sesionActiva) {
+        /*if (this.sesionActiva) {
             this.model = {
                 ...this.sesionActiva
             }
-        }
+        }*/
         this.loader = false
     }
   }

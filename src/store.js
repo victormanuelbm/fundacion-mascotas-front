@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import moment from 'moment'
+import auth0 from 'auth0-js'
+import router from './router'
 
 Vue.use(Vuex)
 export default new Vuex.Store({
@@ -58,7 +60,15 @@ export default new Vuex.Store({
             {id: '5', nombre: 'modificar-cargos', descripcion: 'Poder modificar cargos'},
             {id: '6', nombre: 'eliminar-cargos', descripcion: 'Poder eliminar cargos'},
         ],
-        notificaciones: 0
+        notificaciones: 0,
+        userIsAuthorize: false,
+        auth0: new auth0.WebAuth({
+            domain: process.env.VUE_APP_AUTH0_CONFIG_DOMAIN,
+            clientID: process.env.VUE_APP_AUTH0_CONFIG_CLIENTID,
+            redirecUri: process.env.VUE_APP_DOMAINURL + '/auth0callback',
+            responseType: process.env.VUE_APP_AUTH0_CONFIG_RESPONSETYPE,
+            scope: process.env.VUE_APP_AUTH0_CONFIG_SCOPE
+        })
     },
     mutations: {
         cambiarEstadoCuenta(state, correo) {
@@ -117,7 +127,36 @@ export default new Vuex.Store({
         },
         async consultarSesion (state, usuario) {
             state.sesionActiva = usuario
+        },
+        setUserIsAuthenticated(state, replacement) {
+            state.userIsAuthorize = replacement
         }
     },
-    actions: {}
+    actions: {
+        auth0Login(context) {
+            context.state.auth0.authorize()
+        },
+        auth0HandleAuthentication (context) {
+            context.state.auth0.parseHash((err, authResult) => {
+                if (authResult && authResult.accessToken && authResult.idToken) {
+                    const expiresAt = JSON.stringify(authResult.expiresIn * 1000 + new Date().getTime())
+                    localStorage.setItem('access_token', authResult.accessToken)
+                    localStorage.setItem('id_token', authResult.idToken)
+                    localStorage.setItem('expires_at', expiresAt)
+                    router.replace('/perfil')
+
+                } else if (err){
+                    alert('Login fallido')
+                    router.replace('/login')
+                    console.log(err)
+                }
+            })
+        },
+        auth0Logout () {
+            localStorage.removeItem('access_token')
+            localStorage.removeItem('id_token')
+            localStorage.removeItem('expires_at')
+            window.location.href = process.env.VUE_APP_DOMAINURL + '/login'
+        }
+    }
 })

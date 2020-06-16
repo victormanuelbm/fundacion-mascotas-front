@@ -1,10 +1,7 @@
 <template>
   <div class="scroll-wrapper scrollbar-inner">
     <div class="main-content">
-      <dashboard-navbar></dashboard-navbar>
-
-      <div @click="toggleSidebar">
-        <fade-transition :duration="200" origin="center top" mode="out-in">
+      <div>
           <!-- your content here -->
 
           <base-nav class="navbar-top navbar-dark"
@@ -73,13 +70,31 @@
             <span class="mask bg-gradient-success opacity-6"></span>
           </base-header>
           <router-view></router-view>
-        </fade-transition>
-        <content-footer v-if="!$route.meta.hideFooter"></content-footer>
       </div>
     </div>
+    <b-button variant="outline-primary" @click="iniciarSesion()" v-if="!$store.state.userIsAuthorize">Login</b-button>
+    <b-button variant="outline-danger" @click="salirSesion()" v-if="$store.state.userIsAuthorize">Cerrar sesión</b-button>
   </div>
 </template>
 <script>
+export default {
+  name: 'IndexLayout',
+  data () {
+    return {
+      clienteId: process.env.VUE_APP_AUTH0_CONFIG_DOMAIN
+    }
+  },
+  methods: {
+    iniciarSesion() {
+      console.log('entro')
+      this.$store.dispatch('auth0Login')
+    },
+    salirSesion() {
+      console.log('salio')
+      this.$store.dispatch('auth0Logout')
+    }
+  }
+}
 </script>
 <style lang="scss">
 </style>
