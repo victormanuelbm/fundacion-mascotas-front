@@ -125,7 +125,6 @@ import {mapState} from 'vuex'
             idEspecie: '',
             edadMascota: '',
             sexoMascota: '',
-            disponibilidadMascota: '',
             fechaIngreso: '',
             idFundacion: '',
             idVeterinaria: ''
@@ -224,7 +223,6 @@ import {mapState} from 'vuex'
         ingresoFile () {},
         subirImagen () {},
         async guardarCambios () {
-            console.log(this.mascota)
             if (!this.validacion()) {
                 this.$toast.info({
                     title: 'No se puede guardar cambios de la mascota',
@@ -232,9 +230,12 @@ import {mapState} from 'vuex'
                 })
                 return
             }
-            console.log(this.mascota)
             if (this.mascota) {
-                axios.put(this.servidor + 'MascotaController_Edit.php', this.model)
+                console.log('this.mascota')
+                this.model.disponibilidadMascota = undefined
+                this.model.fechaSalida = undefined
+                console.log(this.mascota)
+                await axios.post(this.servidor + 'MascotaController_Edit.php', this.model)
                 .then(response => {
                     this.$toast.success({
                         title: 'Modificación Exitosa',
@@ -249,7 +250,7 @@ import {mapState} from 'vuex'
                     return
                 });
             } else {
-                axios.post(this.servidor + 'MascotaController_Insert.php', this.model)
+                await axios.post(this.servidor + 'MascotaController_Insert.php', this.model)
                 .then(response => {
                     this.$toast.success({
                         title: 'Registro Exitoso',

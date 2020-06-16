@@ -29,7 +29,7 @@
                                      selected-variant="active"
                                      select-mode="single">
                                 <template slot="fundacion" slot-scope="data">
-                                    {{ (fundaciones.find(fundacion => { return fundacion.idFundacion == data.item.idFundacion } )) }}
+                                    {{ (fundaciones.find(fundacion => { return fundacion.idFundacion == data.item.idFundacion } )).nombre }}
                                 </template>
                                 <template slot="historial" slot-scope="data">
                                     <base-button outline type="secondary" @click="formularioHistorial(data.item)" >
@@ -136,7 +136,9 @@ import {mapState} from 'vuex'
             // this.itemsMascota = []
         },
         async eliminarMascota (mascota) {
-            await axios.get(this.servidor + 'MascotaController_Delete.php?idMascota=' + mascota.idMascota).then(response => {
+            await axios.post(this.servidor + 'MascotaController_Delete.php', {
+                idMascota: mascota.idMascota
+            }).then(response => {
                 this.$toast.success({
                     title: 'Eliminación Exitosa',
                     message: 'Se elimino correctamente.'
