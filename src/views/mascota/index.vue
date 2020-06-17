@@ -19,6 +19,9 @@
                                     Registrar Mascota
                                 </base-button>
                             </div>
+                            <div class="text-center" v-if="loader">
+                                <vue-loaders name="ball-beat" color="blue" scale="2" class="text-center" />
+                            </div>
                             <b-table striped
                                      hover
                                      selectable
@@ -27,19 +30,29 @@
                                      @row-selected="seleccionado"
                                      responsive="sm"
                                      selected-variant="active"
-                                     select-mode="single">
+                                     :busy="loader">
                                 <template slot="fundacion" slot-scope="data">
-                                    {{ (fundaciones.find(fundacion => { return fundacion.idFundacion === data.item.idFundacion } )).nombre }}
+                                    {{ (fundaciones.find(fundacion => { return fundacion.idFundacion == data.item.idFundacion } )).nombre }}
                                 </template>
                                 <template slot="historial" slot-scope="data">
-                                    <base-button outline type="secondary" @click="formularioHistorial(data.item)" >
+                                    <base-button size="sm" outline type="success" @click="formularioHistorial(data.item)" >
                                     <i class="fa fa-plus-circle" aria-hidden="true"></i>
                                     </base-button>
+                                    <base-button size="sm" outline type="danger" @click="eliminarMascota(data.item)" >
+                                    <i class="fa fa-trash" aria-hidden="true"></i>
+                                    </base-button>
+                                    <b-button size="sm" type="secondary" @click="mostrarImagenMascote(data)" class="mr-2">
+                                        {{ data.detailsShowing ? 'Ocultar' : 'Ver'}}
+                                    </b-button>
+                                </template>
+                                <template slot="row-details" slot-scope="row">
+                                    <b-row align-v="start">
+                                        <b-col v-for="foto in row.item.fotos" :key="foto.idMascota" cols="2">
+                                            <foto :imagen="foto.foto_mascota_ruta"/>
+                                        </b-col>
+                                    </b-row>
                                 </template>
                             </b-table>
-                            <div class="text-center" v-if="loader">
-                                <vue-loaders name="ball-beat" color="blue" scale="2" class="text-center" />
-                            </div>
                         </template>
                     </card>
                 </div>
@@ -51,9 +64,10 @@
 import 'flatpickr/dist/flatpickr.css'
 import axios from 'axios'
 import {mapState} from 'vuex'
+import foto from './foto'
 
   export default {
-    components: {},
+    components: {foto},
     name: 'index',
     data() {
       return {
@@ -67,8 +81,6 @@ import {mapState} from 'vuex'
             { key: 'edadMascota', label: 'Edad ' },
             { key: 'sexoMascota', label: ' Sexo' },
             { key: 'fundacion', label: 'Fundacion' },
-            { key: 'fechaIngreso', label: 'Ingreso' },
-            { key: 'disponibilidadMascota', label: '¿Adoptable?'},
             { key: 'historial', label: 'Historial'}
         ],
         fundaciones: [
@@ -94,7 +106,7 @@ import {mapState} from 'vuex'
     methods: {
         async listar () {},
         abrirFormularioRegistro () {
-            this.$router.push('/mascota/registro')
+            this.$router.push({name: 'registroMascota'})
         },
         formatearItems (usuarios) {
             const self = this
@@ -118,8 +130,53 @@ import {mapState} from 'vuex'
             console.log(mascota)
         },
         async apiMascotas () {
-            this.cargando = false
+            this.loader = true
+            this.itemsMascota = []
+            axios.get(this.servidor + 'MascotaController_ListAll.php').then(response => {
+                if (response.data.result) {
+                    this.$toast.error({
+                        title: 'Información',
+                        message: response.data.result
+                    })
+                } else {
+                    this.itemsMascota = response.data
+                } 
+            }).catch(function (error) {
+                console.log(error)
+            })
+            this.loader = false
             // this.itemsMascota = []
+        },
+        async eliminarMascota (mascota) {
+            await axios.post(this.servidor + 'MascotaController_Delete.php', {
+                idMascota: mascota.idMascota
+            }).then(response => {
+                this.$toast.success({
+                    title: 'Eliminación Exitosa',
+                    message: 'Se elimino correctamente.'
+                })
+                this.apiMascotas()
+            }).catch(function (error) {
+                console.log(error)
+                this.$toast.error({
+                    title: 'Error en la Eliminación',
+                    message: 'No se pudo eliminar la mascota.'
+                })
+            })
+        },
+        async mostrarImagenMascote(dataRow) {
+            this.loader = true
+            if (!dataRow.item.fotos) {
+                await axios.post(this.servidor + 'FotoController_ListById.php',{
+                    idMascota: dataRow.item.idMascota
+                }).then(response => {
+                    dataRow.item.fotos = response.data
+                }).catch(function (error) {
+                    console.log(error)
+                })
+            }
+            dataRow.toggleDetails()
+            this.loader = false
         }
     },
     watch: {

@@ -4,6 +4,8 @@ import DashboardLayout from '@/layout/DashboardLayout'
 import IndexLayout from '@/layout/IndexLayout'
 import AuthLayout from '@/layout/AuthLayout'
 import Store from './store'
+import IndexLayoutNew from '@/layout/IndexLayoutNew'
+
 Vue.use(Router)
 
 const router = new Router({

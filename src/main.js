@@ -34,6 +34,12 @@ Vue.use(ArgonDashboard)
 Vue.use(BootstrapVue)
 Vue.use(VueLoaders);
 
+/*Vue.use(function (req, res, next) {
+  res.setHeader('Access-Control-allow-Origin', '*')
+  res.setHeader('Access-Control-allow-Headers', 'Origin, X-Requestes-With, Content-Type, Accept')
+  next()
+})*/
+
 var toastrConfigs = {
   position: 'top right',
   showDuration: 10

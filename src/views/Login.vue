@@ -1,60 +1,60 @@
 <template>
-    <div class="container-fluid mt--5">
-        <div class="row">
-            <div class="col-12">
-                <b-carousel
-      id="carousel-1"
-      v-model="slide"
-      :interval="4000"
-      controls
-      indicators
-      background="#ababab"
-      img-width="1024"
-      img-height="480"
-      style="text-shadow: 1px 1px 2px #333;"
-      @sliding-start="onSlideStart"
-      @sliding-end="onSlideEnd"
-    >
-      <!-- Text slides with image -->
-      <b-carousel-slide
-        caption="First slide"
-        text="Nulla vitae elit libero, a pharetra augue mollis interdum."
-        img-src="https://www.infobae.com/new-resizer/Lt5PFr_rUZD-ww638ARXCnKm1M8=/750x0/filters:quality(100)/arc-anglerfish-arc2-prod-infobae.s3.amazonaws.com/public/NVWQSYGX3RC7ZBEHLPLDVXA3PU.jpg"
-      ></b-carousel-slide>
-
-      <!-- Slides with custom text -->
-      <b-carousel-slide img-src="https://www.minsalud.gov.co/fotoscarrusel2017/vacunacioon_mascota.jpg">
-        <h1>Hello world!</h1>
-      </b-carousel-slide>
-
-      <!-- Slides with image only -->
-      <b-carousel-slide img-src="https://picsum.photos/1024/480/?image=58"></b-carousel-slide>
-
-      <!-- Slides with img slot -->
-      <!-- Note the classes .d-block and .img-fluid to prevent browser default image alignment -->
-      <b-carousel-slide>
-        <template v-slot:img>
-          <img
-            class="d-block img-fluid w-100"
-            width="1024"
-            height="480"
-            src="https://picsum.photos/1024/480/?image=55"
-            alt="image slot"
+  <div class="container-fluid mt--5">
+    <div class="row">
+      <div class="col-xl-12 order-xl-1">
+        <card shadow type="secondary">
+          <b-carousel id="carousel-1"
+                      v-model="slide"
+                      :interval="3000"
+                      controls
+                      indicators
+                      background="#ababab"
+                      img-width="1024"
+                      img-height="480"
+                      style="text-shadow: 1px 1px 2px #333;"
+                      @sliding-start="onSlideStart"
+                      @sliding-end="onSlideEnd"
           >
-        </template>
-      </b-carousel-slide>
+            <!-- Text slides with image -->
+            <b-carousel-slide
+              caption="Fundación Huellitas"
+              text="fundación ubicada en el centro."
+              img-src="https://www.65ymas.com/uploads/s1/65/73/5/bigstock-dog-beagle-having-fun-running-294325987-1.jpeg"
+            ></b-carousel-slide>
 
-      <!-- Slide with blank fluid image to maintain slide aspect ratio -->
-      <b-carousel-slide caption="Blank Image" img-blank img-alt="Blank image">
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse eros felis, tincidunt
-          a tincidunt eget, convallis vel est. Ut pellentesque ut lacus vel interdum.
-        </p>
-      </b-carousel-slide>
-    </b-carousel>
-            </div>
-        </div>
+            <!-- Slides with custom text -->
+            <b-carousel-slide img-src="https://www.minsalud.gov.co/fotoscarrusel2017/vacunacioon_mascota.jpg">
+              <h1>HOLA AMIGUITOSS!</h1>
+            </b-carousel-slide>
+
+            <!-- Slides with image only -->
+            <b-carousel-slide img-src="https://picsum.photos/1024/480/?image=58"></b-carousel-slide>
+
+            <!-- Slides with img slot -->
+            <!-- Note the classes .d-block and .img-fluid to prevent browser default image alignment -->
+            <b-carousel-slide>
+              <template v-slot:img>
+                <img class="d-block img-fluid w-100"
+                     width="1024"
+                     height="480"
+                     src="https://picsum.photos/1024/480/?image=55"
+                     alt="image slot"
+                >
+              </template>
+            </b-carousel-slide>
+
+            <!-- Slide with blank fluid image to maintain slide aspect ratio -->
+            <b-carousel-slide caption="Blank Image" img-blank img-alt="Blank image">
+            <p>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse eros felis, tincidunt
+              a tincidunt eget, convallis vel est. Ut pellentesque ut lacus vel interdum.
+            </p>
+            </b-carousel-slide>
+          </b-carousel>
+        </card>
+      </div>
     </div>
+  </div>
 </template>
 <script>
 import {mapState, mapMutations} from 'vuex'
@@ -137,12 +137,6 @@ import axios from 'axios'
             */
         },
         ingresarAux () {
-    
-            axios.get('http://3.211.250.73/adopet-ufps/controller/MascotaController_ListAll.php').then(function (response) {
-                console.log(response)
-            }).catch(function (error) {
-                console.log(error)
-            })
             const self = this
             if (this.model.password === '' || this.model.correo === '' || this.model.password === undefined || this.model.correo === undefined) {
               this.$toast.info({

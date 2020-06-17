@@ -48,13 +48,6 @@
                                             </base-input>
                                         </div>
                                         <div class="col-lg-4">
-                                            <base-input label="Disponibilidad" :valid="validarDisponibilidad">
-                                                <select class="form-control" v-model="model.disponibilidadMascota" >
-                                                    <option v-for="disponibilidad in tiposDisponibilidad" :key="disponibilidad" :value="disponibilidad" >{{ disponibilidad }}</option>
-                                                </select>
-                                            </base-input>
-                                        </div>
-                                        <div class="col-lg-4">
                                             <base-input label="Fundación" :valid="validarFundacion">
                                                 <select class="form-control" v-model="model.idFundacion">
                                                     <option v-for="fundacion in fundaciones" :key="fundacion.idFundacion" :value="fundacion.idFundacion" >{{ fundacion.nombre }}</option>
@@ -88,16 +81,16 @@
                                                         label="Foto de la Mascota"
                                                         input-classes="form-control-alternative">
                                                 <b-form-file
-                                                    @change="ingresoFile"
                                                     class="btn btn-primary btn-sm" plain
-                                                    accept=".jpg, .png, .gif, .jpeg"
+                                                    accept="image/*"
                                                     placeholder="Escojer foto..."
-                                                    browse-text="Buscar"/>
+                                                    browse-text="Buscar"
+                                                    @change="ingresoFile"/>
                                             </base-input>
                                         </div>
                                     </div>
                                     <div class="text-right" >
-                                        <base-button outline @click="guardarCambios()" type="success">Guardar Cambios</base-button>
+                                        <base-button outline @click="insertarImagenes(61)" type="success">Guardar Cambios</base-button>
                                     </div>
                                 </div>
                             </form>
@@ -111,6 +104,8 @@
 <script>
 import flatPicker from 'vue-flatpickr-component'
 import 'flatpickr/dist/flatpickr.css'
+import axios from 'axios'
+import {mapState} from 'vuex'
   export default {
     components: {
       flatPicker
@@ -127,13 +122,13 @@ import 'flatpickr/dist/flatpickr.css'
         model: {
             idMascota: undefined,
             nombreMascota: '',
+            idEspecie: '',
             edadMascota: '',
             sexoMascota: '',
-            diponibilidadMascota: '',
             fechaIngreso: '',
-            fechaSalida: '',
             idFundacion: '',
-            idVeterinaria: ''
+            idVeterinaria: '',
+            file: ''
         },
         fotografia: {
             base64: '',
@@ -156,10 +151,11 @@ import 'flatpickr/dist/flatpickr.css'
             { idVeterinaria: '2', nombre: 'Pet-terinaria' }
         ],
         tiposSexo: ['Asexual', 'Macho', 'Hembra'],
-        tiposDisponibilidad: ['Disponible', 'No Disponible'],
+        tiposDisponibilidad: ['1', '0'],
       }
     },
     computed: {
+        ...mapState(['servidor']),
         validarNombre () {
             if (this.model.nombreMascota === '') {
                 return false
@@ -183,15 +179,6 @@ import 'flatpickr/dist/flatpickr.css'
                 return false
             }
             else if (this.model.sexoMascota === undefined) {
-                return undefined
-            }
-            return true
-        },
-        validarDisponibilidad () {
-            if (this.model.disponibilidadMascota === '' ) {
-                return false
-            }
-            else if (this.model.disponibilidadMascota === undefined) {
                 return undefined
             }
             return true
@@ -234,9 +221,7 @@ import 'flatpickr/dist/flatpickr.css'
         },
     },
     methods: {
-        ingresoFile () {},
         subirImagen () {},
-        async actualizarFoto () {},
         async guardarCambios () {
             if (!this.validacion()) {
                 this.$toast.info({
@@ -244,20 +229,114 @@ import 'flatpickr/dist/flatpickr.css'
                     message: 'Existen campos vacios o no validos dentro del formulario'
                 })
                 return
-            } else {
-                this.$toast.success({
-                    title: 'Registro Exitoso',
-                    message: 'Se registro la mascota correctamente'
-                })
             }
+            if (this.mascota) {
+                console.log('this.mascota')
+                this.model.disponibilidadMascota = undefined
+                this.model.fechaSalida = undefined
+                /*await axios.post(this.servidor + 'MascotaController_Edit.php', this.model)
+                .then(response => {
+                    
+                    this.$toast.success({
+                        title: 'Modificación Exitosa',
+                        message: 'Se modifico la mascota correctamente'
+                    })
+                })
+                .catch(error => {
+                    this.$toast.Error({
+                        title: 'Error',
+                        message: 'No se puede modificar cambios de la mascota'
+                    })
+                    return
+                });*/
+            } else {
+                await axios.post(this.servidor + 'MascotaController_Insert.php', this.model).then(response => {
+                    this.$toast.success({
+                        title: 'Registro Exitoso',
+                        message: 'Se registro la mascota correctamente'
+                        })
+                        this.insertarImagenes(response.data)
+                    }).catch(error => {
+                    this.$toast.error({
+                        title: 'Error',
+                        message: 'No se puede guardar cambios de la mascota'
+                    })
+                    return
+                });
+            }
+            // this.$router.push('/mascota')
         },
         validacion () {
-            if (this.validarNombre && this.validarEdad && this.validarSexo && this.validarDisponibilidad
-            && this.validarFundacion && this.validarEspecie && this.validarVeterinaria && this.validarFechaIngreso) {
+            if (this.validarNombre && this.validarEdad && this.validarSexo && this.validarFundacion
+                    && this.validarEspecie && this.validarVeterinaria && this.validarFechaIngreso) {
                 return true
             }
             return false
+        },
+        ingresoFile (event) {
+            this.imagen = event.target.files[0]
+        },
+        subirImagen () {
+            const file = this.imagen
+            let reader = new FileReader()
+            const self = this
+            let cadena = ''
+            this.fotografia.extension = file.type
+            let variable = '---'
+            reader.onloadend = (file) => {
+                self.actualizarFoto(reader.result)
+            }
+            variable = reader.readAsDataURL(file)
+        },
+        async actualizarFoto (base64) {
+            console.log( base64)
+            console.log('-----------------------------')
+            const parametros = {
+                extension: this.fotografia.extension,
+                id: null,
+                base64: base64
+            }
+        },
+        async insertarImagenes (idMascota) {
+            if (this.imagen) {
+                // this.subirImagen()
+                const file = this.imagen
+                let reader = new FileReader()
+                const self = this
+                let cadena = ''
+                this.fotografia.extension = file.type
+                let variable = '---'
+                reader.onloadend = (file) => {
+                    console.log('variable')
+                    console.log( reader.result)
+                    axios.post(this.servidor + 'FotoController_Insert.php', {
+                        idMascota: idMascota,
+                        foto_mascota_ruta: reader.result
+                    }).then(response => {
+                        this.$toast.success({
+                            title: 'Registro Exitoso',
+                            message: 'Se registro la imaganes de la mascota correctamente'
+                        })
+                    }).catch(error => {
+                        this.$toast.error({
+                            title: 'Error',
+                            message: 'No se pudo guardar la imagen de la mascota'
+                        })
+                        return
+                    });
+                }
+                variable = await reader.readAsDataURL(file)
+                console.log(variable)
+                }
         }
+        /*await axios.put(this.servidorAcceso + 'usuarios/personas/' + this.model.numeroDocumento + '/fotografia', {
+            ...parametros
+        }).then(response => (
+            this.$toast.success({
+                title: 'Actualizacion Exitosa',
+                message: 'Se actualizo la foto con exito'
+            })
+        ))*/
     },
     created: function() {
         if (this.mascota) {
