@@ -90,7 +90,7 @@
                                         </div>
                                     </div>
                                     <div class="text-right" >
-                                        <base-button outline @click="insertarImagenes(61)" type="success">Guardar Cambios</base-button>
+                                        <base-button outline @click="guardarCambios()" type="success">Guardar Cambios</base-button>
                                     </div>
                                 </div>
                             </form>
@@ -127,8 +127,7 @@ import {mapState} from 'vuex'
             sexoMascota: '',
             fechaIngreso: '',
             idFundacion: '',
-            idVeterinaria: '',
-            file: ''
+            idVeterinaria: ''
         },
         fotografia: {
             base64: '',
@@ -234,13 +233,13 @@ import {mapState} from 'vuex'
                 console.log('this.mascota')
                 this.model.disponibilidadMascota = undefined
                 this.model.fechaSalida = undefined
-                /*await axios.post(this.servidor + 'MascotaController_Edit.php', this.model)
+                await axios.post(this.servidor + 'MascotaController_Edit.php', this.model)
                 .then(response => {
-                    
                     this.$toast.success({
                         title: 'Modificación Exitosa',
                         message: 'Se modifico la mascota correctamente'
                     })
+                    this.$router.push('/mascota')
                 })
                 .catch(error => {
                     this.$toast.Error({
@@ -248,14 +247,15 @@ import {mapState} from 'vuex'
                         message: 'No se puede modificar cambios de la mascota'
                     })
                     return
-                });*/
+                });
             } else {
                 await axios.post(this.servidor + 'MascotaController_Insert.php', this.model).then(response => {
                     this.$toast.success({
                         title: 'Registro Exitoso',
                         message: 'Se registro la mascota correctamente'
                         })
-                        this.insertarImagenes(response.data)
+                        // this.insertarImagenes(response.data)
+                        this.$router.push('/mascota')
                     }).catch(error => {
                     this.$toast.error({
                         title: 'Error',
@@ -264,7 +264,6 @@ import {mapState} from 'vuex'
                     return
                 });
             }
-            // this.$router.push('/mascota')
         },
         validacion () {
             if (this.validarNombre && this.validarEdad && this.validarSexo && this.validarFundacion
@@ -309,10 +308,12 @@ import {mapState} from 'vuex'
                 reader.onloadend = (file) => {
                     console.log('variable')
                     console.log( reader.result)
-                    axios.post(this.servidor + 'FotoController_Insert.php', {
+                    const params = {
                         idMascota: idMascota,
-                        foto_mascota_ruta: reader.result
-                    }).then(response => {
+                        fechaSalida: reader.result
+                    }
+                    console.log(params)
+                    axios.post(this.servidor + 'MascotaController_Insert.php', params).then(response => {
                         this.$toast.success({
                             title: 'Registro Exitoso',
                             message: 'Se registro la imaganes de la mascota correctamente'
