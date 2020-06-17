@@ -4,24 +4,42 @@
       <div>
           <!-- your content here -->
 
-          <base-nav class="navbar-top navbar-dark"
-              id="navbar-main"
-              :show-toggle-button="false"
-              expand>
+          <base-nav class="navbar-top navbar-horizontal navbar-dark py-0"
+                  containerClasses="px-0 container"
+                  expand>
         <ul class="navbar-nav form-inline mr-3 d-none d-md-flex ml-lg-auto">
-            <li class="nav-item dropdown px-5 my-1">
+            <li class="nav-item">
+              <router-link class="nav-link nav-link-icon" to="/mascota">
+                <i class="fa fa-credit-card"></i>
+                <span class="nav-link-inner--text">Donaciones</span>
+              </router-link>
+            </li>
+            <li class="nav-item">
+              <router-link class="nav-link nav-link-icon" to="/mascota">
+                <i class="fa fa-paw"></i>
+                <span class="nav-link-inner--text">Mascotas</span>
+              </router-link>
+            </li>
+            <li class="nav-item">
+              <router-link class="nav-link nav-link-icon" to="/mascota">
+                <i class="fa fa-building"></i>
+                <span class="nav-link-inner--text">Fundaciones</span>
+              </router-link>
+            </li>
+            <li class="nav-item" v-if="!sesionActiva">
+              <b-button size="sm"
+                        class="my-2 my-sm-0"
+                        type="submit"
+                        @click="iniciarSesion()">
+                          <i class="ni ni-key-25"></i>
+                          Ingresar
+              </b-button>
+            </li>
+            <li class="nav-item dropdown px-0 my-1" v-else>
                 <base-dropdown class="nav-link pr-0">
                     <div class="media align-items-center" slot="title">
                 <span class="avatar avatar-lg rounded-circle">
-                  <h5>
-                    <div
-                      style="border-radius:9px; position:absolute"
-                      class="my-2"
-                      pill
-                      variant="danger">
-                        <i class="ni ni-bell-55 ni-2x text-red"></i>
-                    </div>
-                  </h5>
+                  <b-img :src="foto" fluid-grow rounded="circle" right/>
                 </span>
                       <div class="media-body ml-2 d-none d-lg-block">
                             <span class="mb-0 text-sm  font-weight-bold"></span>
@@ -36,19 +54,15 @@
                             <i class="ni ni-single-02"></i>
                             <span>Mi perfil</span>
                         </router-link>
-                        <router-link to="/notificacion" class="dropdown-item">
-                            <i class="ni ni-bell-55"></i>
-                            <span>Notificaciones</span>
-                        </router-link>
                         <router-link to="/mascota" class="dropdown-item">
-                            <i class="ni ni-bell-55"></i>
+                            <i class="fa fa-paw"></i>
                             <span>Mascotas</span>
                         </router-link>
                         <div class="dropdown-divider"></div>
-                        <router-link to="/" class="dropdown-item">
+                        <b-button class="dropdown-item" @click="salirSesion">
                             <i class="ni ni-user-run"></i>
                             <span>Cerrar Sesion</span>
-                        </router-link>
+                        </b-button>
                     </template>
                 </base-dropdown>
             </li>
@@ -67,35 +81,55 @@
             </base-dropdown>
         </ul>
     </base-nav>
-
           <base-header class="header pb-8 pt-5 pt-lg-8 d-flex align-items-center"
-            style="min-height: 200px; background-image: url(img/logo_completo.jpg); background-size: cover; background-position: center top;">
+            style="min-height: 200px; background-image: url(img/logo_completo.jpg); background-size: cover; background-position: center top;" v-if="sesionActiva">
             <!-- Mask -->
             <span class="mask bg-gradient-success opacity-6"></span>
+            
+          </base-header>
+          <base-header class="header pb-8 pt-5 pt-lg-8 d-flex align-items-center"
+            style="min-height: 200px; background-image: url(img/logo_completo.jpg); background-size: cover; background-position: center top;" v-else>
+            <!-- Mask -->
+            <span class="mask bg-gradient-success opacity-6"></span>
+            
           </base-header>
           <router-view></router-view>
+          
       </div>
     </div>
-    <b-button variant="outline-primary" @click="iniciarSesion()" v-if="!$store.state.userIsAuthorize">Login</b-button>
-    <b-button variant="outline-danger" @click="salirSesion()" v-if="$store.state.userIsAuthorize">Cerrar sesión</b-button>
   </div>
 </template>
 <script>
+import {mapState} from 'vuex'
 export default {
   name: 'IndexLayout',
   data () {
     return {
-      clienteId: process.env.VUE_APP_AUTH0_CONFIG_DOMAIN
+      clienteId: process.env.VUE_APP_AUTH0_CONFIG_DOMAIN,
+      foto: undefined
+    }
+  },
+  computed: {
+    ...mapState(['sesionActiva']),
+  },
+  watch: {
+    sesionActiva (value) {
+      if (value) {
+        this.foto = value.foto
+      }
     }
   },
   methods: {
     iniciarSesion() {
-      console.log('entro')
       this.$store.dispatch('auth0Login')
     },
     salirSesion() {
-      console.log('salio')
       this.$store.dispatch('auth0Logout')
+    }
+  },
+  created: async function() {
+    if (this.sesionActiva) {
+      this.foto = this.sesionActiva.foto
     }
   }
 }

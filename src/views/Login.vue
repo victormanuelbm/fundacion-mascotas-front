@@ -1,50 +1,60 @@
 <template>
     <div class="container-fluid mt--5">
-            <div class="row">
-                <div class="col-xl-12 order-xl-1">
-                    <div class="col-lg-5 col-md-7">
-                <div class="card bg-secondary shadow border-0">
-                    <div class="card-header bg-transparent pb-5">
-                        <div class="text-muted text-center mt-2 mb-3"><small>Login</small></div>
-                        <div class="btn-wrapper text-center">
-                            <h1><i class="ni ni-circle-08 ni-4x" aria-hidden="true"></i></h1>
-                        </div>
-                    </div>
-                    <div class="card-body px-lg-5 py-lg-5">
-                        <form role="form">
-                            <base-input class="input-group-alternative mb-3"
-                                        placeholder="Correo"
-                                        addon-left-icon="ni ni-correo-83"
-                                        v-model="model.correo"
-                                        :valid="validarcorreo">
-                            </base-input>
+        <div class="row">
+            <div class="col-12">
+                <b-carousel
+      id="carousel-1"
+      v-model="slide"
+      :interval="4000"
+      controls
+      indicators
+      background="#ababab"
+      img-width="1024"
+      img-height="480"
+      style="text-shadow: 1px 1px 2px #333;"
+      @sliding-start="onSlideStart"
+      @sliding-end="onSlideEnd"
+    >
+      <!-- Text slides with image -->
+      <b-carousel-slide
+        caption="First slide"
+        text="Nulla vitae elit libero, a pharetra augue mollis interdum."
+        img-src="https://www.infobae.com/new-resizer/Lt5PFr_rUZD-ww638ARXCnKm1M8=/750x0/filters:quality(100)/arc-anglerfish-arc2-prod-infobae.s3.amazonaws.com/public/NVWQSYGX3RC7ZBEHLPLDVXA3PU.jpg"
+      ></b-carousel-slide>
 
-                            <base-input class="input-group-alternative"
-                                        placeholder="contraseña"
-                                        type="password"
-                                        addon-left-icon="ni ni-lock-circle-open"
-                                        v-model="model.password"
-                                        :valid="validarPassword">
-                            </base-input>
+      <!-- Slides with custom text -->
+      <b-carousel-slide img-src="https://www.minsalud.gov.co/fotoscarrusel2017/vacunacioon_mascota.jpg">
+        <h1>Hello world!</h1>
+      </b-carousel-slide>
 
-                            <base-checkbox class="custom-control-alternative">
-                                <span class="text-muted">Recordarme</span>
-                            </base-checkbox>
-                            <div class="text-center">
-                                <base-button type="primary" @click="ingresarAux()" class="my-4">Ingresar</base-button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-                <div class="row mt-3">
-                    <div class="col-6">
-                        <a href="#" class="text-light"><small>Olvido su contraseña?</small></a>
-                    </div>
-                </div>
-            </div>
-                </div>
+      <!-- Slides with image only -->
+      <b-carousel-slide img-src="https://picsum.photos/1024/480/?image=58"></b-carousel-slide>
+
+      <!-- Slides with img slot -->
+      <!-- Note the classes .d-block and .img-fluid to prevent browser default image alignment -->
+      <b-carousel-slide>
+        <template v-slot:img>
+          <img
+            class="d-block img-fluid w-100"
+            width="1024"
+            height="480"
+            src="https://picsum.photos/1024/480/?image=55"
+            alt="image slot"
+          >
+        </template>
+      </b-carousel-slide>
+
+      <!-- Slide with blank fluid image to maintain slide aspect ratio -->
+      <b-carousel-slide caption="Blank Image" img-blank img-alt="Blank image">
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse eros felis, tincidunt
+          a tincidunt eget, convallis vel est. Ut pellentesque ut lacus vel interdum.
+        </p>
+      </b-carousel-slide>
+    </b-carousel>
             </div>
         </div>
+    </div>
 </template>
 <script>
 import {mapState, mapMutations} from 'vuex'
@@ -56,7 +66,9 @@ import axios from 'axios'
         model: {
           correo: undefined,
           password: undefined
-        }
+        },
+      slide: 0,
+      sliding: null
       }
     },
     computed: {
@@ -173,7 +185,13 @@ import axios from 'axios'
             } else {
                 return true
             }
-        }
+        },
+    onSlideStart(slide) {
+        this.sliding = true
+      },
+      onSlideEnd(slide) {
+        this.sliding = false
+      }
     },
     created () {
         this.$store.commit('cerrarSesion')

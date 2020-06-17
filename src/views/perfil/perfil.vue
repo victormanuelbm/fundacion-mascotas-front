@@ -19,19 +19,7 @@
                                 <div class="card card-profile shadow">
                                     <b-row class="justify-content-md-center">
                                         <div class="col-lg-2 form-group">
-                                            <foto :imagen="fotografia.base64" :extension="fotografia.extension" />
-                                        </div>
-                                    </b-row>
-                                    <b-row class="justify-content-md-center">
-                                        <div class="col-lg-3 form-group">
-                                            <div class="input-group input-group-sm">
-                                                <b-form-file
-                                                    accept="image/jpeg, image/png, image/gif"
-                                                    @change="onFileSelected"
-                                                    placeholder="Escojer foto..."
-                                                    browse-text="Buscar"
-                                                    class="form-control form-control-sm"/>
-                                            </div>
+                                            <foto :imagen="sesionActiva.foto"/>
                                         </div>
                                     </b-row>
                                     <div class="card-body pt-0 pt-md-4">
@@ -246,9 +234,6 @@ import foto from './foto'
     },
     watch: {
         sesionActiva (value) {
-            console.log('-------------')
-            console.log(value)
-            console.log('-------------')
             if (value) {
                 this.model = {
                     ...value
@@ -286,8 +271,11 @@ import foto from './foto'
         /*
             Esto esta aqui para capturar la informacion del usuario que inicio session
         */
-        console.log('this.sesionActiva')
-        console.log(this.sesionActiva)
+        if (this.sesionActiva) {
+            this.model = {
+                ...this.sesionActiva
+            }
+        }
         this.loader = false
     }
   }

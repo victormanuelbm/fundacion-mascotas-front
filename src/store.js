@@ -71,20 +71,6 @@ export default new Vuex.Store({
         })
     },
     mutations: {
-        cambiarEstadoCuenta(state, correo) {
-            state.usuarios.forEach(element => {
-                if (correo === element.correo) {
-                    element.estadoCuenta = true
-                    state.sesionActiva = element
-                }
-            })
-        },
-        cerrarSesion (state) {
-            state.usuarios.forEach(element => {
-                element.estadoCuenta = false
-            })
-            state.sesionActiva = undefined
-        },
         modificarUsuario (state, usuario) {
             const nuevos = []
             state.usuarios.forEach(element => {
@@ -124,9 +110,6 @@ export default new Vuex.Store({
         },
         iniciarSesion (state, hijos) {
             state.menu = hijos
-        },
-        async consultarSesion (state, usuario) {
-            state.sesionActiva = usuario
         },
         setUserIsAuthenticated(state, replacement) {
             state.userIsAuthorize = replacement

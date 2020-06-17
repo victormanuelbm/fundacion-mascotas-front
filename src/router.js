@@ -41,7 +41,7 @@ const router = new Router({
           meta: { requiresAuth: true }
         },
         {
-          path: 'mascota/',
+          path: '/mascota',
           name: 'mascota',
           component: () => import('./views/mascota/index.vue'),
           meta: { requiresAuth: true }
@@ -99,22 +99,17 @@ router.beforeEach((to, from, next) => {
     console.log(expiresAt)
   }
   Store.commit('setUserIsAuthenticated', routerAuthcheck)
-  console.log(1)
   if (to.matched.some(record => record.meta.requiresAuth)) {
-    console.log(2)
     // this route requires auth, check if logged in
     // if not, redirect to login page.
     if (routerAuthcheck) {
-      console.log(3)
       next()
-      console.log(4)
     } else {
-      console.log(5)
       router.replace('/login')
     }
 
-
   } else {
+    console.log(6)
     next() // make sure to always call next()!
   }
 })
