@@ -88,7 +88,7 @@ const router = new Router({
         },
         {
           path: 'albergue/registro',
-          name: 'registroAlbergu',
+          name: 'registroAlbergue',
           component: () => import('./views/albergue/formulario.vue')
         },
         {
