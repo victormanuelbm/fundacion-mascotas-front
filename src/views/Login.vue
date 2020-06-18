@@ -16,23 +16,23 @@
                       @sliding-end="onSlideEnd"
           >
             <!-- Text slides with image -->
-            <b-carousel-slide
-              caption="Fundación Huellitas"
-              text="fundación ubicada en el centro."
-              img-src="https://www.65ymas.com/uploads/s1/65/73/5/bigstock-dog-beagle-having-fun-running-294325987-1.jpeg"
+            <b-carousel-slide caption="Fundación Huellitas"
+                              img-src="https://www.65ymas.com/uploads/s1/65/73/5/bigstock-dog-beagle-having-fun-running-294325987-1.jpeg"
             ></b-carousel-slide>
 
             <!-- Slides with custom text -->
-            <b-carousel-slide img-src="https://www.minsalud.gov.co/fotoscarrusel2017/vacunacioon_mascota.jpg">
+            <b-carousel-slide caption="Fundación Huellitas"
+                              img-src="https://www.minsalud.gov.co/fotoscarrusel2017/vacunacioon_mascota.jpg">
               <h1>HOLA AMIGUITOSS!</h1>
             </b-carousel-slide>
 
             <!-- Slides with image only -->
-            <b-carousel-slide img-src="https://picsum.photos/1024/480/?image=58"></b-carousel-slide>
+            <b-carousel-slide caption="Michi Fundación"
+                              img-src="https://picsum.photos/1024/480/?image=58"></b-carousel-slide>
 
             <!-- Slides with img slot -->
             <!-- Note the classes .d-block and .img-fluid to prevent browser default image alignment -->
-            <b-carousel-slide>
+            <b-carousel-slide caption="Michi Fundación">
               <template v-slot:img>
                 <img class="d-block img-fluid w-100"
                      width="1024"
@@ -42,18 +42,24 @@
                 >
               </template>
             </b-carousel-slide>
-
-            <!-- Slide with blank fluid image to maintain slide aspect ratio -->
-            <b-carousel-slide caption="Blank Image" img-blank img-alt="Blank image">
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse eros felis, tincidunt
-              a tincidunt eget, convallis vel est. Ut pellentesque ut lacus vel interdum.
-            </p>
-            </b-carousel-slide>
           </b-carousel>
         </card>
       </div>
     </div>
+
+
+    <b-card-group columns>
+      <b-card
+        v-for="mascota in mascotas"
+        :key="mascota.Mascota_idMascota_idMascota"
+        :title="'Mi nombre es ' + mascota.foto_mascota_nombre + ', Adoptame!'"
+        :img-src="mascota.foto_mascota_ruta"
+        img-alt="Image"
+        img-top
+      >
+        <b-button href="#" variant="primary">Ver Mascota</b-button>
+      </b-card>
+    </b-card-group>
   </div>
 </template>
 <script>
@@ -68,11 +74,12 @@ import axios from 'axios'
           password: undefined
         },
       slide: 0,
-      sliding: null
+      sliding: null,
+      mascotas: []
       }
     },
     computed: {
-        ...mapState(['servidorSeguridad', 'usuarios', 'servidorAcceso', 'menu']),
+        ...mapState(['servidorSeguridad', 'usuarios', 'servidorAcceso', 'menu', 'servidor']),
         ...mapMutations(['iniciarSesion', 'consultarSesion']),
         validarcorreo () {
             if (this.model.correo === '') {
@@ -185,10 +192,29 @@ import axios from 'axios'
       },
       onSlideEnd(slide) {
         this.sliding = false
+      },
+      async apiMascotasrandom () {
+        this.loader = true
+        this.itemsMascota = []
+        axios.get(this.servidor + 'FotoController_List_Random.php').then(response => {
+          if (response.data.result) {
+            this.$toast.error({
+              title: 'Información',
+              message: response.data.result
+            })
+          } else {
+            console.log(response)
+            this.mascotas = response.data
+          } 
+        }).catch(function (error) {
+          console.log(error)
+        })
+        this.loader = false
       }
     },
     created () {
-        this.$store.commit('cerrarSesion')
+      // this.$store.commit('cerrarSesion')
+      this.apiMascotasrandom()
     }
   }
 </script>

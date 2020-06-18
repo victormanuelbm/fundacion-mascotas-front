@@ -1,6 +1,6 @@
 <template>
     <div class="clearfix" style="width: 100px; height: 100;">
-        <b-img v-bind="foto" fluid-grow rounded="circle" right/>
+        <b-img v-bind="foto" fluid-grow right/>
     </div>
 </template>
 <script>

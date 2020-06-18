@@ -26,12 +26,18 @@
                                         </div>
                                         <div class="col-lg-4">
                                             <base-input alternative=""
-                                                        label="Edad"
-                                                        placeholder="Edad de la Mascota"
-                                                        input-classes="form-control-alternative"
-                                                        v-model="model.edadMascota"
-                                                        :valid="validarEdad"
-                                            />
+                                                       label="Fecha de Nacimiento"
+                                                       placeholder="Fecha de Nacimiento"
+                                                       input-classes="form-control-alternative"
+                                                        :valid="validarFechaNacimiento">
+                                                <flat-picker slot-scope="{focus, blur}"
+                                                             @on-open="focus"
+                                                             @on-close="blur"
+                                                             :config="{allowInput: true}"
+                                                             class="form-control datepicker"
+                                                             v-model="model.edadMascota">
+                                                </flat-picker>
+                                            </base-input>
                                         </div>
                                         <div class="col-lg-4">
                                             <base-input label="Especie" :valid="validarEspecie">
@@ -70,22 +76,20 @@
                                             </base-input>
                                         </div>
                                         <div class="col-lg-4">
-                                            <base-input label="Veterinaria" :valid="validarVeterinaria">
-                                                <select class="form-control" v-model="model.idVeterinaria">
-                                                    <option v-for="veterinaria in veterinarias" :key="veterinaria.idVeterinaria" :value="veterinaria.idVeterinaria" >{{ veterinaria.nombre }}</option>
-                                                </select>
-                                            </base-input>
-                                        </div>
-                                        <div class="col-lg-4">
                                             <base-input alternative=""
                                                         label="Foto de la Mascota"
                                                         input-classes="form-control-alternative">
-                                                <b-form-file
-                                                    class="btn btn-primary btn-sm" plain
-                                                    accept="image/*"
-                                                    placeholder="Escojer foto..."
-                                                    browse-text="Buscar"
-                                                    @change="ingresoFile"/>
+                                                <vue-upload-multiple-image
+                                                    @upload-success="uploadImageSuccess"
+                                                    @before-remove="beforeRemove"
+                                                    @edit-image="editImage"
+                                                    :data-images="images"
+                                                    idUpload="myIdUpload"
+                                                    editUpload="myIdEdit"
+                                                    dragText="Seleccione o arrastre una foto..."
+                                                    browseText="Haz click aqui"
+                                                    :maxImage="3"
+                                                ></vue-upload-multiple-image>
                                             </base-input>
                                         </div>
                                     </div>
@@ -106,9 +110,12 @@ import flatPicker from 'vue-flatpickr-component'
 import 'flatpickr/dist/flatpickr.css'
 import axios from 'axios'
 import {mapState} from 'vuex'
+import VueUploadMultipleImage from 'vue-upload-multiple-image'
+
   export default {
     components: {
-      flatPicker
+      flatPicker,
+      VueUploadMultipleImage
     },
     name: 'registro',
     props: {
@@ -127,7 +134,8 @@ import {mapState} from 'vuex'
             sexoMascota: '',
             fechaIngreso: '',
             idFundacion: '',
-            idVeterinaria: ''
+            idVeterinaria: '',
+            file: ''
         },
         fotografia: {
             base64: '',
@@ -136,21 +144,24 @@ import {mapState} from 'vuex'
         },
         imagen: undefined,
         fundaciones: [
-            { idFundacion: '1', nombre: 'Fundacion las Puertas del Cielo' },
-            { idFundacion: '2', nombre: 'Lo que el Agua se Llevo' },
-            { idFundacion: '3', nombre: 'El Espanta-Tiburones' }
+            { idFundacion: '1', nombre: 'Michi Fundación' },
+            { idFundacion: '2', nombre: 'Fundación Huellitas' },
+            { idFundacion: '3', nombre: 'El jardin del Eden' }
         ],
         especies: [
-            { idEspecie: '1', nombre: 'Mamifero Heterosexual' },
-            { idEspecie: '2', nombre: 'Reptil' },
-            { idEspecie: '3', nombre: 'Pez' }
+            { idEspecie: '1', nombre: 'Felino' },
+            { idEspecie: '2', nombre: 'Canino' },
+            { idEspecie: '3', nombre: 'Pez' },
+            { idEspecie: '4', nombre: 'reptil' }
         ],
         veterinarias: [
             { idVeterinaria: '1', nombre: 'Vec-terinaria' },
             { idVeterinaria: '2', nombre: 'Pet-terinaria' }
         ],
-        tiposSexo: ['Asexual', 'Macho', 'Hembra'],
+        tiposSexo: ['Macho', 'Hembra'],
         tiposDisponibilidad: ['1', '0'],
+        listaFotos: [],
+        images: []
       }
     },
     computed: {
@@ -200,11 +211,11 @@ import {mapState} from 'vuex'
             }
             return true
         },
-        validarVeterinaria () {
-            if (this.model.idVeterinaria === '' ) {
+        validarFechaNacimiento () {
+            if (this.model.edadMascota === '') {
                 return false
             }
-            else if (this.model.idVeterinaria === undefined) {
+            else if (this.model.edadMascota === undefined) {
                 return undefined
             }
             return true
@@ -219,6 +230,7 @@ import {mapState} from 'vuex'
             return true
         },
     },
+    watch : {},
     methods: {
         subirImagen () {},
         async guardarCambios () {
@@ -230,18 +242,17 @@ import {mapState} from 'vuex'
                 return
             }
             if (this.mascota) {
-                console.log('this.mascota')
                 this.model.disponibilidadMascota = undefined
                 this.model.fechaSalida = undefined
                 await axios.post(this.servidor + 'MascotaController_Edit.php', this.model)
-                .then(response => {
+                .then(() => {
                     this.$toast.success({
                         title: 'Modificación Exitosa',
                         message: 'Se modifico la mascota correctamente'
                     })
-                    this.$router.push('/mascota')
+                    this.insertarImagenes(this.model.idMascota)
                 })
-                .catch(error => {
+                .catch(() => {
                     this.$toast.Error({
                         title: 'Error',
                         message: 'No se puede modificar cambios de la mascota'
@@ -254,20 +265,20 @@ import {mapState} from 'vuex'
                         title: 'Registro Exitoso',
                         message: 'Se registro la mascota correctamente'
                         })
-                        // this.insertarImagenes(response.data)
+                        this.insertarImagenes(response.data)
                         this.$router.push('/mascota')
-                    }).catch(error => {
-                    this.$toast.error({
-                        title: 'Error',
-                        message: 'No se puede guardar cambios de la mascota'
-                    })
-                    return
-                });
+                    }).catch(() => {
+                        this.$toast.error({
+                            title: 'Error',
+                            message: 'No se puede guardar cambios de la mascota'
+                        })
+                        return
+                    });
             }
         },
         validacion () {
             if (this.validarNombre && this.validarEdad && this.validarSexo && this.validarFundacion
-                    && this.validarEspecie && this.validarVeterinaria && this.validarFechaIngreso) {
+                    && this.validarEspecie && this.validarFechaIngreso) {
                 return true
             }
             return false
@@ -275,69 +286,27 @@ import {mapState} from 'vuex'
         ingresoFile (event) {
             this.imagen = event.target.files[0]
         },
-        subirImagen () {
-            const file = this.imagen
-            let reader = new FileReader()
-            const self = this
-            let cadena = ''
-            this.fotografia.extension = file.type
-            let variable = '---'
-            reader.onloadend = (file) => {
-                self.actualizarFoto(reader.result)
-            }
-            variable = reader.readAsDataURL(file)
-        },
-        async actualizarFoto (base64) {
-            console.log( base64)
-            console.log('-----------------------------')
-            const parametros = {
-                extension: this.fotografia.extension,
-                id: null,
-                base64: base64
-            }
-        },
         async insertarImagenes (idMascota) {
-            if (this.imagen) {
-                // this.subirImagen()
-                const file = this.imagen
-                let reader = new FileReader()
-                const self = this
-                let cadena = ''
-                this.fotografia.extension = file.type
-                let variable = '---'
-                reader.onloadend = (file) => {
-                    console.log('variable')
-                    console.log( reader.result)
-                    const params = {
-                        idMascota: idMascota,
-                        fechaSalida: reader.result
-                    }
-                    console.log(params)
-                    axios.post(this.servidor + 'MascotaController_Insert.php', params).then(response => {
-                        this.$toast.success({
-                            title: 'Registro Exitoso',
-                            message: 'Se registro la imaganes de la mascota correctamente'
-                        })
-                    }).catch(error => {
-                        this.$toast.error({
-                            title: 'Error',
-                            message: 'No se pudo guardar la imagen de la mascota'
-                        })
-                        return
-                    });
+                var formDa = new FormData()
+                const arrayFotos = []
+                if (this.listaFotos && this.listaFotos.length > 0) {
+                    this.listaFotos.forEach((foto, index) => {
+                        formDa.append('foto_mascota_ruta_' + (index + 1), foto.path)
+                    })
                 }
-                variable = await reader.readAsDataURL(file)
-                console.log(variable)
-                }
+                formDa.append('idMascota', idMascota)
+                await axios.post(this.servidor + 'FotoController_Insert_1.php', formDa)
+        },
+        uploadImageSuccess(formData, index, fileList) {
+            this.listaFotos = fileList
+        },
+        beforeRemove (index, done, fileList) {
+            done()
+            this.listaFotos = fileList
+        },
+        editImage (formData, index, fileList) {
+            this.listaFotos = fileList
         }
-        /*await axios.put(this.servidorAcceso + 'usuarios/personas/' + this.model.numeroDocumento + '/fotografia', {
-            ...parametros
-        }).then(response => (
-            this.$toast.success({
-                title: 'Actualizacion Exitosa',
-                message: 'Se actualizo la foto con exito'
-            })
-        ))*/
     },
     created: function() {
         if (this.mascota) {

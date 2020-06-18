@@ -65,9 +65,13 @@ import 'flatpickr/dist/flatpickr.css'
 import axios from 'axios'
 import {mapState} from 'vuex'
 import foto from './foto'
+import VueUploadMultipleImage from 'vue-upload-multiple-image'
 
   export default {
-    components: {foto},
+    components: {
+        foto,
+        VueUploadMultipleImage
+    },
     name: 'index',
     data() {
       return {
@@ -97,7 +101,8 @@ import foto from './foto'
             { idVeterinaria: '1', nombre: 'Vec-terinaria' },
             { idVeterinaria: '2', nombre: 'Pet-terinaria' }
         ],
-        loader: false
+        loader: false,
+        images: []
       }
     },
     computed: {

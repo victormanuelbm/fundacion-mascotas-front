@@ -27,11 +27,13 @@ import CxltToastr from 'cxlt-vue2-toastr'
 import 'cxlt-vue2-toastr/dist/css/cxlt-vue2-toastr.css'
 import 'vue-loaders/dist/vue-loaders.css';
 import VueLoaders from 'vue-loaders';
+import VueLazyload from 'vue-lazyload';
 
-Vue.prototype.$http = axios
-Vue.config.productionTip = false
-Vue.use(ArgonDashboard)
-Vue.use(BootstrapVue)
+Vue.prototype.$http = axios;
+Vue.config.productionTip = false;
+Vue.use(VueLazyload);
+Vue.use(ArgonDashboard);
+Vue.use(BootstrapVue);
 Vue.use(VueLoaders);
 
 /*Vue.use(function (req, res, next) {
