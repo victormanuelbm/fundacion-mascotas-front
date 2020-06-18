@@ -213,24 +213,7 @@ import {mapState} from 'vuex'
             return true
         },
 
-        validarVeterinaria () {
-            if (this.model.idVeterinaria === '' ) {
-                return false
-            }
-            else if (this.model.idVeterinaria === undefined) {
-                return undefined
-            }
-            return true
-        },
-        validarEspecie () {
-            if (this.model.idEspecie === '' ) {
-                return false
-            }
-            else if (this.model.idEspecie === undefined) {
-                return undefined
-            }
-            return true
-        },
+        
     },
     methods: {
         ingresoFile () {},
