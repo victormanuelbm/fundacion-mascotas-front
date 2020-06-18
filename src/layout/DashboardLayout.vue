@@ -43,7 +43,8 @@
         menu: [
           { nombre: 'Perfil', icono: 'fa fa-user', path: '/perfil' },
           { nombre: 'Mascota', icono: 'fa fa-paw', path: '/mascota' },
-          { nombre: 'Usuario', icono: 'fa fa-users', path: '/usuario' }
+          { nombre: 'Usuario', icono: 'fa fa-users', path: '/usuario' },
+          { nombre: 'fundacion', icono: 'fa fa-building', path: '/fundacion' }
         ]
       };
     },

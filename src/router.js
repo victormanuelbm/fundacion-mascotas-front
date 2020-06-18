@@ -69,6 +69,22 @@ const router = new Router({
           name: 'modificarUsuario',
           component: () => import('./views/usuario/formulario.vue'),
           props: (route) => ({ usuario: route.params.usuario })
+        },
+        {
+          path: 'fundacion/registro',
+          name: 'registroFundacion',
+          component: () => import('./views/fundacion/formulario.vue')
+        },
+        {
+          path: 'fundacion/',
+          name: 'fundacion',
+          component: () => import('./views/fundacion/index.vue')
+        },
+        {
+          path: 'fundacion/modificar',
+          name: 'modificarFundacion',
+          component: () => import('./views/fundacion/formulario.vue'),
+          props: (route) => ({ fundacion: route.params.fundacion })
         }
       ]
     },
