@@ -65,6 +65,8 @@
 <script>
 import flatPicker from 'vue-flatpickr-component'
 import 'flatpickr/dist/flatpickr.css'
+import axios from 'axios'
+import {mapState} from 'vuex'
   export default {
     components: {
       flatPicker
@@ -110,6 +112,7 @@ import 'flatpickr/dist/flatpickr.css'
       }
     },
     computed: {
+        ...mapState(['servidor']),
         validarNombre () {
             if (this.model.nombreAlbergue === '') {
                 return false
@@ -137,47 +140,11 @@ import 'flatpickr/dist/flatpickr.css'
             }
             return true
         },
-        validarDisponibilidad () {
-            if (this.model.disponibilidadMascota === '' ) {
-                return false
-            }
-            else if (this.model.disponibilidadMascota === undefined) {
-                return undefined
-            }
-            return true
-        },
         validarFundacion () {
             if (this.model.idFundacion === '' ) {
                 return false
             }
             else if (this.model.idFundacion === undefined) {
-                return undefined
-            }
-            return true
-        },
-        validarFechaIngreso () {
-            if (this.model.fechaIngreso === '') {
-                return false
-            }
-            else if (this.model.fechaIngreso === undefined) {
-                return undefined
-            }
-            return true
-        },
-        validarVeterinaria () {
-            if (this.model.idVeterinaria === '' ) {
-                return false
-            }
-            else if (this.model.idVeterinaria === undefined) {
-                return undefined
-            }
-            return true
-        },
-        validarEspecie () {
-            if (this.model.idEspecie === '' ) {
-                return false
-            }
-            else if (this.model.idEspecie === undefined) {
                 return undefined
             }
             return true
@@ -190,20 +157,48 @@ import 'flatpickr/dist/flatpickr.css'
         async guardarCambios () {
             if (!this.validacion()) {
                 this.$toast.info({
-                    title: 'No se puede guardar cambios de la mascota',
+                    title: 'No se puede guardar cambios del albergue',
                     message: 'Existen campos vacios o no validos dentro del formulario'
                 })
                 return
-            } else {
-                this.$toast.success({
-                    title: 'Registro Exitoso',
-                    message: 'Se registro la mascota correctamente'
-                })
             }
+            if (this.albergue) {
+                console.log('this.albergue')
+                console.log(this.albergue)
+                await axios.put(this.servidor + 'AlbergueController_Edit.php', this.model)
+                .then(response => {
+                    this.$toast.success({
+                        title: 'Modificación Exitosa',
+                        message: 'Se modifico el albergue correctamente'
+                    })
+                })
+                .catch(error => {
+                    this.$toast.Error({
+                        title: 'Error',
+                        message: 'No se puede modificar cambios del albergue'
+                    })
+                    return
+                });
+            } else {
+                await axios.post(this.servidor + 'AlbergueController_Insert.php', this.model)
+                .then(response => {
+                    this.$toast.success({
+                        title: 'Registro Exitoso',
+                        message: 'Se registro el albergue correctamente'
+                    })
+                })
+                .catch(error => {
+                    this.$toast.Error({
+                        title: 'Error',
+                        message: 'No se puede guardar cambios del albergue'
+                    })
+                    return
+                });
+            }
+            this.$router.push('/albergue')
         },
         validacion () {
-            if (this.validarNombre && this.validarEdad && this.validarSexo && this.validarDisponibilidad
-            && this.validarFundacion && this.validarEspecie && this.validarVeterinaria && this.validarFechaIngreso) {
+            if (this.validarNombre && this.validarTelefono && this.validarDireccion && this.validarFundacion) {
                 return true
             }
             return false

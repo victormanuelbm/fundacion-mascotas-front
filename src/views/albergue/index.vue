@@ -23,13 +23,18 @@
                                      hover
                                      selectable
                                      :fields="camposTablaMascota"
-                                     :items="itemsMascota"
+                                     :items="itemsAlbergue"
                                      @row-selected="seleccionado"
                                      responsive="sm"
                                      selected-variant="active"
                                      select-mode="single">
                                 <template slot="fundacion" slot-scope="data">
                                     {{ (fundaciones.find(fundacion => { return fundacion.idFundacion === data.item.idFundacion } )).nombre }}
+                                </template>
+                                <template slot="opciones" slot-scope="data">
+                                    <base-button outline type="danger" @click="eliminarAlbergue(data.item)" >
+                                        <i class="fa fa-trash" aria-hidden="true"></i>
+                                    </base-button>
                                 </template>
                             </b-table>
                             <div class="text-center" v-if="loader">
@@ -44,12 +49,14 @@
 </template>
 <script>
 import 'flatpickr/dist/flatpickr.css'
+import axios from 'axios'
+import {mapState} from 'vuex'
   export default {
     components: {},
     name: 'index',
     data() {
       return {
-        itemsMascota: [
+        itemsAlbergue: [
             { nombreAlbergue: 'Albergue 1', telefonoAlbergue: '123', direccionAlbergue: 'Calle 25 AN', idFundacion: '1' },
             { nombreAlbergue: 'Albergue 2', telefonoAlbergue: '456', direccionAlbergue: 'Calle 30 AN', idFundacion: '2' },
             { nombreAlbergue: 'Albergue 3', telefonoAlbergue: '789', direccionAlbergue: 'Calle 35 AN', idFundacion: '3' },
@@ -58,7 +65,8 @@ import 'flatpickr/dist/flatpickr.css'
             { key: 'nombreAlbergue', label: 'Albergue' },
             { key: 'telefonoAlbergue', label: 'Teléfono ' },
             { key: 'direccionAlbergue', label: ' Dirección' },
-            { key: 'fundacion', label: 'Fundación'}
+            { key: 'fundacion', label: 'Fundación'},
+            { key: 'opciones', label: 'Opciones'}
         ],
         fundaciones: [
             { idFundacion: '1', nombre: 'Fundacion las Puertas del Cielo' },
@@ -77,7 +85,9 @@ import 'flatpickr/dist/flatpickr.css'
         loader: false
       }
     },
-    computed: {},
+    computed: {
+        ...mapState(['servidor']),
+    },
     methods: {
         async listar () {},
         abrirFormularioRegistro () {
@@ -100,13 +110,46 @@ import 'flatpickr/dist/flatpickr.css'
                     albergue: item[0]
                 }
             })
+        },
+        async apiAlbergue () {
+            this.cargando = false
+            this.itemsAlbergue = []
+            axios.get(this.servidor + 'AlbergueController_ListAll.php').then(response => {
+                if (response.data.result) {
+                    this.$toast.error({
+                        title: 'Información',
+                        message: response.data.result
+                    })
+                } else {
+                    this.itemsAlbergue = response.data
+                } 
+            }).catch(function (error) {
+                console.log(error)
+            })
+        },
+        async eliminarAlbergue (albergue) {
+            await axios.post(this.servidor + 'AlbergueController_Delete.php', {
+                idAlbergue: albergue.idAlbergue
+            }).then(response => {
+                this.$toast.success({
+                    title: 'Eliminación Exitosa',
+                    message: 'Se elimino correctamente.'
+                })
+                this.apiAlbergue()
+            }).catch(function (error) {
+                console.log(error)
+                this.$toast.error({
+                    title: 'Error en la Eliminación',
+                    message: 'No se pudo eliminar el albergue.'
+                })
+            })
         }
     },
     watch: {
     },
     created: async function() {
         this.loader = true
-        await this.listar()
+        await this.apiAlbergue()
         this.loader = false
     }
   }
