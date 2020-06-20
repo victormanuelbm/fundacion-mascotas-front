@@ -107,8 +107,6 @@ import {mapState} from 'vuex'
             { idVeterinaria: '1', nombre: 'Vec-terinaria' },
             { idVeterinaria: '2', nombre: 'Pet-terinaria' }
         ],
-        tiposSexo: ['Asexual', 'Macho', 'Hembra'],
-        tiposDisponibilidad: ['Disponible', 'No Disponible'],
       }
     },
     computed: {
