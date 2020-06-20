@@ -72,20 +72,7 @@ import {mapState} from 'vuex'
             { key: 'nombrepropietario', label: 'Propietario?'},
             { key: 'opciones', label: 'Eliminar'}
         ],
-        fundaciones: [
-            { idFundacion: '1', nombre: 'Fundacion las Puertas del Cielo' },
-            { idFundacion: '2', nombre: 'Lo que el Agua se Llevo' },
-            { idFundacion: '3', nombre: 'El Espanta-Tiburones' }
-        ],
-        especies: [
-            { idEspecie: '1', nombre: 'Mamifero Heterosexual' },
-            { idEspecie: '2', nombre: 'Reptil' },
-            { idEspecie: '3', nombre: 'Pez' }
-        ],
-        veterinarias: [
-            { idVeterinaria: '1', nombre: 'Vec-terinaria' },
-            { idVeterinaria: '2', nombre: 'Pet-terinaria' }
-        ],
+        
         loader: false
       }
     },
