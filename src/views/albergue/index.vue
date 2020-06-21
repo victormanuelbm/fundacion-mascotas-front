@@ -54,6 +54,12 @@ import axios from 'axios'
 import {mapState} from 'vuex'
   export default {
     components: {},
+    props: {
+        fundacion: {
+            type: Object,
+            required: true
+        }
+    },
     name: 'index',
     data() {
       return {
@@ -124,21 +130,18 @@ import {mapState} from 'vuex'
                 } else {
                     this.itemsAlbergue = response.data
                 } 
-            }).catch(function (error) {
-                console.log(error)
             })
         },
         async eliminarAlbergue (albergue) {
             await axios.post(this.servidor + 'AlbergueController_Delete.php', {
                 idAlbergue: albergue.idAlbergue
-            }).then(response => {
+            }).then(() => {
                 this.$toast.success({
                     title: 'Eliminación Exitosa',
                     message: 'Se elimino correctamente.'
                 })
                 this.apiAlbergue()
-            }).catch(function (error) {
-                console.log(error)
+            }).catch(() => {
                 this.$toast.error({
                     title: 'Error en la Eliminación',
                     message: 'No se pudo eliminar el albergue.'

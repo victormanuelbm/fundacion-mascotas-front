@@ -50,8 +50,8 @@
 
     <b-card-group columns>
       <b-card
-        v-for="mascota in mascotas"
-        :key="mascota.Mascota_idMascota_idMascota"
+        v-for="(mascota, index) in mascotas"
+        :key="index"
         :title="'Mi nombre es ' + mascota.foto_mascota_nombre + ', Adoptame!'"
         :img-src="mascota.foto_mascota_ruta"
         img-alt="Image"
@@ -66,7 +66,7 @@
 import {mapState, mapMutations} from 'vuex'
 import axios from 'axios'
   export default {
-    name: 'login',
+    name: 'Index',
     data() {
       return {
         model: {
@@ -187,10 +187,10 @@ import axios from 'axios'
                 return true
             }
         },
-    onSlideStart(slide) {
+    onSlideStart() {
         this.sliding = true
       },
-      onSlideEnd(slide) {
+      onSlideEnd() {
         this.sliding = false
       },
       async apiMascotasrandom () {
@@ -203,12 +203,9 @@ import axios from 'axios'
               message: response.data.result
             })
           } else {
-            console.log(response)
             this.mascotas = response.data
           } 
-        }).catch(function (error) {
-          console.log(error)
-        })
+        }).catch(() => {})
         this.loader = false
       }
     },

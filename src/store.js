@@ -135,7 +135,6 @@ export default new Vuex.Store({
                         correo: authResult.idTokenPayload.email,
                         foto: authResult.idTokenPayload.picture
                     }
-                    console.log(this.state)
                     localStorage.setItem('access_token', authResult.accessToken)
                     localStorage.setItem('id_token', authResult.idToken)
                     localStorage.setItem('expires_at', expiresAt)
@@ -145,7 +144,6 @@ export default new Vuex.Store({
                 } else if (err){
                     alert('Login fallido')
                     router.replace('/login')
-                    console.log(err)
                 }
             })
         },

@@ -45,7 +45,9 @@
           { nombre: 'Mascota', icono: 'fa fa-paw', path: '/mascota' },
           { nombre: 'Usuario', icono: 'fa fa-users', path: '/usuario' },
           { nombre: 'donacion', icono: 'fa fa-gift', path: '/donacion' },
-          { nombre: 'albergue', icono: 'fa fa-hospital', path: '/albergue' }
+          { nombre: 'albergue', icono: 'fa fa-hospital', path: '/albergue' },
+          { nombre: 'fundacion', icono: 'fa fa-building', path: '/fundacion' }
+
         ]
       };
     },

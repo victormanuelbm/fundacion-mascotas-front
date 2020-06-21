@@ -7,29 +7,29 @@
           <base-nav class="navbar-top navbar-horizontal navbar-dark py-0"
                   containerClasses="px-0 container"
                   expand>
-        <ul class="navbar-nav form-inline mr-3 d-none d-md-flex ml-lg-auto">
-            <li class="nav-item">
+        <ul class="navbar-nav form-inline mr-3 d-none d-md-flex ml-lg-auto py-3">
+            <li class="nav-item" v-if="sesionActiva">
               <router-link class="nav-link nav-link-icon" to="/mascota">
-                <i class="fa fa-credit-card"></i>
-                <span class="nav-link-inner--text">Donaciones</span>
+                <i class="fa fa-shopping-bag"></i>
+                <span class="nav-link-inner--text">Tienda</span>
               </router-link>
             </li>
-            <li class="nav-item">
+            <li class="nav-item" v-if="sesionActiva">
               <router-link class="nav-link nav-link-icon" to="/mascota">
                 <i class="fa fa-paw"></i>
                 <span class="nav-link-inner--text">Mascotas</span>
               </router-link>
             </li>
-            <li class="nav-item">
-              <router-link class="nav-link nav-link-icon" to="/donacion">
+            <li class="nav-item" v-if="sesionActiva">
+              <router-link class="nav-link nav-link-icon" to="/fundacion">
                 <i class="fa fa-building"></i>
                 <span class="nav-link-inner--text">Fundaciones</span>
               </router-link>
             </li>
-            <li class="nav-item">
-              <router-link class="nav-link nav-link-icon" to="/albergue">
-                <i class="fa fa-building"></i>
-                <span class="nav-link-inner--text">Albergue</span>
+            <li class="nav-item" v-if="sesionActiva">
+              <router-link class="nav-link nav-link-icon" to="/donacion">
+                <i class="fa fa-credit-card"></i>
+                <span class="nav-link-inner--text">Donaciones</span>
               </router-link>
             </li>
             <li class="nav-item" v-if="!sesionActiva">

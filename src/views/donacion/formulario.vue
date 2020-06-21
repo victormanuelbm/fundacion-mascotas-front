@@ -222,16 +222,14 @@ import {mapState} from 'vuex'
                 return
             }
             if (this.donacion) {
-                console.log('this.donacion')
-                console.log(this.donacion)
                 await axios.put(this.servidor + 'DonacionController_Edit.php', this.model)
-                .then(response => {
+                .then(() => {
                     this.$toast.success({
                         title: 'Modificación Exitosa',
                         message: 'Se modifico la donacion correctamente'
                     })
                 })
-                .catch(error => {
+                .catch(() => {
                     this.$toast.Error({
                         title: 'Error',
                         message: 'No se puede modificar cambios de la donacion'
@@ -240,13 +238,13 @@ import {mapState} from 'vuex'
                 });
             } else {
                 await axios.post(this.servidor + 'DonacionController_Insert.php', this.model)
-                .then(response => {
+                .then(() => {
                     this.$toast.success({
                         title: 'Registro Exitoso',
                         message: 'Se registro la donacion correctamente'
                     })
                 })
-                .catch(error => {
+                .catch(() => {
                     this.$toast.Error({
                         title: 'Error',
                         message: 'No se puede guardar cambios de la donacion'

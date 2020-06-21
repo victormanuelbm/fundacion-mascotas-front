@@ -63,14 +63,11 @@
     </div>
 </template>
 <script>
-import flatPicker from 'vue-flatpickr-component'
 import 'flatpickr/dist/flatpickr.css'
 import axios from 'axios'
 import {mapState} from 'vuex'
   export default {
-    components: {
-      flatPicker
-    },
+    components: {},
     name: 'registro',
     props: {
         albergue: {
@@ -161,16 +158,14 @@ import {mapState} from 'vuex'
                 return
             }
             if (this.albergue) {
-                console.log('this.albergue')
-                console.log(this.albergue)
                 await axios.put(this.servidor + 'AlbergueController_Edit.php', this.model)
-                .then(response => {
+                .then(() => {
                     this.$toast.success({
                         title: 'Modificación Exitosa',
                         message: 'Se modifico el albergue correctamente'
                     })
                 })
-                .catch(error => {
+                .catch(() => {
                     this.$toast.Error({
                         title: 'Error',
                         message: 'No se puede modificar cambios del albergue'
@@ -179,13 +174,13 @@ import {mapState} from 'vuex'
                 });
             } else {
                 await axios.post(this.servidor + 'AlbergueController_Insert.php', this.model)
-                .then(response => {
+                .then(() => {
                     this.$toast.success({
                         title: 'Registro Exitoso',
                         message: 'Se registro el albergue correctamente'
                     })
                 })
-                .catch(error => {
+                .catch(() => {
                     this.$toast.Error({
                         title: 'Error',
                         message: 'No se puede guardar cambios del albergue'

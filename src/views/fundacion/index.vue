@@ -7,36 +7,40 @@
                         <div slot="header" class="bg-white border-0">
                             <div class="row align-items-center">
                                 <div class="col-8">
-                                    <h3 class="mb-0">Donaciones</h3>
+                                    <h3 class="mb-0">Fundación</h3>
                                 </div>
                             </div>
                         </div>
                         <template>
-                            <h6 class="heading-small text-muted mb-4">Seleccione para Modificar una Donación</h6>
+                            <h6 class="heading-small text-muted mb-4">Seleccione para Modificar una Fundación</h6>
                             <div class="text-right" >
                                 <base-button outline type="secondary" @click="abrirFormularioRegistro()" >
                                     <i class="fa fa-plus-circle" aria-hidden="true"></i>
-                                    Registrar Donación
+                                    Registrar Fundación
                                 </base-button>
                             </div>
                             <b-table striped
                                      hover
                                      selectable
-                                     :fields="camposTablaMascota"
-                                     :items="itemsDonacion"
+                                     :fields="camposTablaFundacion"
+                                     :items="itemsFundacion"
                                      @row-selected="seleccionado"
                                      responsive="sm"
                                      selected-variant="active"
+                                     :small="true"
                                      select-mode="single">
+                                <template slot="opciones" slot-scope="data">
+                                    <base-button size="sm" outline type="danger" @click="eliminarFundacion(data.item)" >
+                                        <i class="fa fa-trash" aria-hidden="true"></i>
+                                    </base-button>
+                                    <base-button size="sm" outline type="info" @click="gestionarAlbergues(data.item)" >
+                                        <i class="fa fa-list" aria-hidden="true"></i>
+                                    </base-button>
+                                </template>
                                 <template slot="fundacion" slot-scope="data">
                                     {{ (fundaciones.find(fundacion => { return fundacion.idFundacion === data.item.idFundacion } )).nombre }}
                                 </template>
-                                <template slot="mascota" slot-scope="data">
-                                    {{ (mascotas.find(mascota => { return mascota.idMascota === data.item.idMascota } )).nombre }}
-                                </template>
-                                <template slot="tipodonacion" slot-scope="data">
-                                    {{ (tipodonaciones.find(tipodonacion => { return tipodonacion.idTipoDonacion === data.item.idTipoDonacion } )).nombre }}
-                                </template>
+
                             </b-table>
                             <div class="text-center" v-if="loader">
                                 <vue-loaders name="ball-beat" color="blue" scale="2" class="text-center" />
@@ -52,58 +56,31 @@
 import 'flatpickr/dist/flatpickr.css'
 import axios from 'axios'
 import {mapState} from 'vuex'
+
   export default {
     components: {},
     name: 'index',
     data() {
       return {
-        itemsDonacion: [
-            { idMascota: '1', idFundacion: '1', fechaDonacion: '19-02-2010', cantidad: 1, descripcion: 'Voy a donar juguetes', idTipoDonacion: '1' },
-            { idMascota: '2', idFundacion: '2', fechaDonacion: '19-02-2010', cantidad: 2, descripcion: 'Voy a donar Medicina', idTipoDonacion: '2' },
-            { idMascota: '3', idFundacion: '3', fechaDonacion: '19-02-2010', cantidad: 3, descripcion: 'Voy a donar Dinero', idTipoDonacion: '3' },
+        itemsFundacion: [],
+        camposTablaFundacion: [
+            { key: 'nombreFundacion', label: 'Fundación' },
+            { key: 'direccionFundacion', label: 'Dirección' },
+            { key: 'telefonoFundacion', label: ' Teléfono' },
+            { key: 'correo', label: 'Correo' },
+            { key: 'opciones', label: 'Opciones'}
         ],
-        camposTablaMascota: [
-            { key: 'mascota', label: 'Mascota' },
-            { key: 'fundacion', label: 'Fundacion ' },
-            { key: 'fechaDonacion', label: ' Fecha' },
-            { key: 'cantidad', label: 'Cantidad' },
-            { key: 'descripcion', label: 'Descripcion' },
-            { key: 'tipodonacion', label: 'Tipo de Donación' }
-        ],
-        fundaciones: [
-            { idFundacion: '1', nombre: 'Fundacion las Puertas del Cielo' },
-            { idFundacion: '2', nombre: 'Lo que el Agua se Llevo' },
-            { idFundacion: '3', nombre: 'El Espanta-Tiburones' }
-        ],
-        especies: [
-            { idEspecie: '1', nombre: 'Mamifero Heterosexual' },
-            { idEspecie: '2', nombre: 'Reptil' },
-            { idEspecie: '3', nombre: 'Pez' }
-        ],
-        veterinarias: [
-            { idVeterinaria: '1', nombre: 'Vec-terinaria' },
-            { idVeterinaria: '2', nombre: 'Pet-terinaria' }
-        ],
-        mascotas: [
-            { idMascota: '1', nombre: 'Molly' },
-            { idMascota: '2', nombre: 'Candy' },
-            { idMascota: '3', nombre: 'Sasha' }
-        ],
-        tipodonaciones: [
-            { idTipoDonacion: '1', nombre: 'Juguetes' },
-            { idTipoDonacion: '2', nombre: 'Medicina' },
-            { idTipoDonacion: '3', nombre: 'Dinero' }
-        ],
+        
         loader: false
       }
     },
     computed: {
-        ...mapState(['servidor']),
+        ...mapState(['servidor'])
     },
     methods: {
         async listar () {},
         abrirFormularioRegistro () {
-            this.$router.push('/donacion/registro')
+            this.$router.push('/fundacion/registro')
         },
         formatearItems (usuarios) {
             const self = this
@@ -117,40 +94,53 @@ import {mapState} from 'vuex'
         },
         seleccionado (item) {
             this.$router.push({
-                name: 'modificarDonacion',
+                name: 'modificarFundacion',
                 params: {
-                    donacion: item[0]
+                    fundacion: item[0]
                 }
             })
         },
-        async apiDonacion () {
+        async apiFundacion () {
             this.cargando = false
-            this.itemsDonacion = []
-            axios.get(this.servidor + 'DonacionController_ListAll.php').then(response => {
+            this.itemsFundacion = []
+            axios.get(this.servidor + 'FundacionController_ListAll.php').then(response => {
                 if (response.data.result) {
                     this.$toast.error({
                         title: 'Información',
                         message: response.data.result
                     })
                 } else {
-                    this.itemsDonacion = response.data
+                    response.data.forEach(fundacion => {
+                        if (!fundacion.msg) {
+                            this.itemsFundacion.push(fundacion)
+                        }
+                    })
                 } 
             }).catch(() => {})
+            // this.itemsMascota = []
         },
-        async eliminarDonacion (donacion) {
-            await axios.post(this.servidor + 'DonacionController_Delete.php', {
-                idDonacion: donacion.idDonacion
+        async eliminarFundacion (fundacion) {
+            await axios.post(this.servidor + 'FundacionController_Delete.php', {
+                idFundacion: fundacion.idFundacion
             }).then(() => {
                 this.$toast.success({
                     title: 'Eliminación Exitosa',
                     message: 'Se elimino correctamente.'
                 })
-                this.apiDonacion()
+                this.apiFundacion()
             }).catch(() => {
                 this.$toast.error({
                     title: 'Error en la Eliminación',
-                    message: 'No se pudo eliminar la donacion.'
+                    message: 'No se pudo eliminar la fundacion.'
                 })
+            })
+        },
+        gestionarAlbergues (fundacion) {
+            this.$router.push({
+                name: 'albergues',
+                params: {
+                    fundacion: fundacion
+                }
             })
         }
     },
@@ -158,7 +148,7 @@ import {mapState} from 'vuex'
     },
     created: async function() {
         this.loader = true
-        await this.apiDonacion()
+        await this.apiFundacion()
         this.loader = false
     }
   }

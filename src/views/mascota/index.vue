@@ -67,12 +67,10 @@ import 'flatpickr/dist/flatpickr.css'
 import axios from 'axios'
 import {mapState} from 'vuex'
 import foto from './foto'
-import VueUploadMultipleImage from 'vue-upload-multiple-image'
 
   export default {
     components: {
-        foto,
-        VueUploadMultipleImage
+        foto
     },
     name: 'index',
     data() {
@@ -141,23 +139,19 @@ import VueUploadMultipleImage from 'vue-upload-multiple-image'
                 } else {
                     this.itemsMascota = response.data
                 } 
-            }).catch(function (error) {
-                console.log(error)
-            })
+            }).catch(() => {})
             this.loader = false
-            // this.itemsMascota = []
         },
         async eliminarMascota (mascota) {
             await axios.post(this.servidor + 'MascotaController_Delete.php', {
                 idMascota: mascota.idMascota
-            }).then(response => {
+            }).then(() => {
                 this.$toast.success({
                     title: 'Eliminación Exitosa',
                     message: 'Se elimino correctamente.'
                 })
                 this.apiMascotas()
-            }).catch(function (error) {
-                console.log(error)
+            }).catch(() => {
                 this.$toast.error({
                     title: 'Error en la Eliminación',
                     message: 'No se pudo eliminar la mascota.'
@@ -171,9 +165,7 @@ import VueUploadMultipleImage from 'vue-upload-multiple-image'
                     idMascota: dataRow.item.idMascota
                 }).then(response => {
                     dataRow.item.fotos = response.data
-                }).catch(function (error) {
-                    console.log(error)
-                })
+                }).catch(() => {})
             }
             dataRow.toggleDetails()
             this.loader = false

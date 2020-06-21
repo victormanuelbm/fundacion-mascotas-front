@@ -1,10 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import DashboardLayout from '@/layout/DashboardLayout'
 import IndexLayout from '@/layout/IndexLayout'
-import AuthLayout from '@/layout/AuthLayout'
 import Store from './store'
-import IndexLayoutNew from '@/layout/IndexLayoutNew'
 
 Vue.use(Router)
 
@@ -52,55 +49,85 @@ const router = new Router({
           path: 'mascota/modificar',
           name: 'modificarMascota',
           component: () => import('./views/mascota/formulario.vue'),
-          props: (route) => ({ mascota: route.params.mascota })
+          props: (route) => ({ mascota: route.params.mascota }),
+          meta: { requiresAuth: true }
         },
         {
           path: 'usuario/registro',
           name: 'registroUsuario',
-          component: () => import('./views/usuario/formulario.vue')
+          component: () => import('./views/usuario/formulario.vue'),
+          meta: { requiresAuth: true }
         },
         {
           path: '/usuario',
           name: 'usuario',
-          component: () => import('./views/usuario/index.vue')
+          component: () => import('./views/usuario/index.vue'),
+          meta: { requiresAuth: true }
         },
         {
           path: 'usuario/modificar',
           name: 'modificarUsuario',
           component: () => import('./views/usuario/formulario.vue'),
-          props: (route) => ({ usuario: route.params.usuario })
+          props: (route) => ({ usuario: route.params.usuario }),
+          meta: { requiresAuth: true }
         },
         {
           path: 'donacion/registro',
           name: 'registroDonacion',
-          component: () => import('./views/donacion/formulario.vue')
+          component: () => import('./views/donacion/formulario.vue'),
+          meta: { requiresAuth: true }
         },
         {
           path: '/donacion',
           name: 'donaciones',
-          component: () => import('./views/donacion/index.vue')
+          component: () => import('./views/donacion/index.vue'),
+          meta: { requiresAuth: true }
         },
         {
           path: '/donacion/modificar',
           name: 'modificarDonacion',
           component: () => import('./views/donacion/formulario.vue'),
-          props: (route) => ({ donacion: route.params.donacion })
+          props: (route) => ({ donacion: route.params.donacion }),
+          meta: { requiresAuth: true }
         },
         {
           path: '/albergue/registro',
           name: 'registroAlbergue',
-          component: () => import('./views/albergue/formulario.vue')
+          component: () => import('./views/albergue/formulario.vue'),
+          meta: { requiresAuth: true }
         },
         {
           path: '/albergue',
           name: 'albergues',
-          component: () => import('./views/albergue/index.vue')
+          component: () => import('./views/albergue/index.vue'),
+          props: (route) => ({ fundacion: route.params.fundacion }),
+          meta: { requiresAuth: true }
         },
         {
           path: '/albergue/modificar',
           name: 'modificarAlbergue',
           component: () => import('./views/albergue/formulario.vue'),
-          props: (route) => ({ albergue: route.params.albergue })
+          props: (route) => ({ albergue: route.params.albergue }),
+          meta: { requiresAuth: true }
+        },
+        {
+          path: '/fundacion/registro',
+          name: 'registroFundacion',
+          component: () => import('./views/fundacion/formulario.vue'),
+          meta: { requiresAuth: true }
+        },
+        {
+          path: '/fundacion',
+          name: 'fundacion',
+          component: () => import('./views/fundacion/index.vue'),
+          meta: { requiresAuth: true }
+        },
+        {
+          path: '/fundacion/modificar',
+          name: 'modificarFundacion',
+          component: () => import('./views/fundacion/formulario.vue'),
+          props: (route) => ({ fundacion: route.params.fundacion }),
+          meta: { requiresAuth: true }
         }
       ]
     },
