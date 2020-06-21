@@ -31,7 +31,23 @@
                                 <template slot="fundacion" slot-scope="data">
                                     {{ (fundaciones.find(fundacion => { return fundacion.idFundacion === data.item.idFundacion } )).nombre }}
                                 </template>
+                                <template slot="redsocial" slot-scope="data">
+                                    <base-button @click="resetModal(data.item.idFundacion)" outline type="secondary" v-b-modal.modal>
+                                        <i class="fa fa-facebook" aria-hidden="true"></i>
+                                    </base-button>
+                                </template>
                             </b-table>
+                            <b-modal @ok="handleOk" id="modal" title="Registro red social" ok-title="Registrar" cancel-title="Cancelar">
+                                <p class="my-4">{{ idFundacion }}</p>
+                                 <base-input alternative=""
+                                                        label="Link de Facebook"
+                                                        placeholder="Link de Facebook"
+                                                        input-classes="form-control-alternative"
+                                                        v-model="redSocial.url"
+                                            />
+
+                            </b-modal>
+
                             <div class="text-center" v-if="loader">
                                 <vue-loaders name="ball-beat" color="blue" scale="2" class="text-center" />
                             </div>
@@ -50,9 +66,16 @@ import 'flatpickr/dist/flatpickr.css'
     data() {
       return {
         itemsMascota: [
-            { nombreFundacion: 'Animalitos Felices', direccionFundacion: 'Calle 20 # 10', telefonoFundacion: '58994748', nit: '35276374', correo: 'fundacion1@gmail.com', nombrepropietario: 'Diego Navas', idUsuario: 1 },
-            { nombreFundacion: 'perritos y gaticos', direccionFundacion: 'av 6 # 7', telefonoFundacion: '5993838', nit: '89045805', correo: 'fundacion2@gmail.com', nombrepropietario: 'Jorge Mojica', idUsuario: 2 },
-            { nombreFundacion: 'animals', direccionFundacion: 'clle 7 # 8', telefonoFundacion: '5772939', nit: '5493850', correo: 'fundacion3@gmail.com', nombrepropietario: 'Richard Acevedo', idUsuario: 3 },
+            {
+	    idFundacion:"1",
+	    nombreFundacion:"FundacionAmigos",
+	    direccionFundacion:"cll8 #98-22",
+	    telefonoFundacion:"5742829",
+	    nit:"925689380-2",
+	    correo:"fundaamigos@gmail.com",
+	    nombrepropietario:"Prueba",
+	    idUsuario:"3"
+	       }
         ],
         camposTablaMascota: [
             { key: 'nombreFundacion', label: 'Fundación' },
@@ -63,9 +86,7 @@ import 'flatpickr/dist/flatpickr.css'
             { key: 'nombrepropietario', label: 'Propietario?'}
         ],
         fundaciones: [
-            { idFundacion: '1', nombre: 'Fundacion las Puertas del Cielo' },
-            { idFundacion: '2', nombre: 'Lo que el Agua se Llevo' },
-            { idFundacion: '3', nombre: 'El Espanta-Tiburones' }
+            { idFundacion: '1', nombre: 'Fundacion las Puertas del Cielo' }
         ],
         especies: [
             { idEspecie: '1', nombre: 'Mamifero Heterosexual' },
@@ -76,12 +97,29 @@ import 'flatpickr/dist/flatpickr.css'
             { idVeterinaria: '1', nombre: 'Vec-terinaria' },
             { idVeterinaria: '2', nombre: 'Pet-terinaria' }
         ],
-        loader: false
+        loader: false,
+        redSocial: { 
+            idRedSocial: undefined,
+            nombre: 'facebook',
+            url: undefined,
+            idFundacion: undefined
+         }
       }
     },
     computed: {},
     methods: {
         async listar () {},
+        handleOk() {
+            console.log(this.redSocial)
+        },
+        resetModal(idFundacion) {
+            this.redSocial = { 
+                idRedSocial: undefined,
+                nombre: 'facebook',
+                url: undefined,
+                idFundacion: idFundacion
+            }
+        },
         abrirFormularioRegistro () {
             this.$router.push('/fundacion/registro')
         },
