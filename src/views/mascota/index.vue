@@ -30,9 +30,11 @@
                                      @row-selected="seleccionado"
                                      responsive="sm"
                                      selected-variant="active"
-                                     :busy="loader">
+                                     :busy="loader"
+                                     :small="true"
+                                     v-if="!loader">
                                 <template slot="fundacion" slot-scope="data">
-                                    {{ (fundaciones.find(fundacion => { return fundacion.idFundacion == data.item.idFundacion } )).nombre }}
+                                    {{ (fundaciones.find(fundacion => { return fundacion.idFundacion == data.item.idFundacion } )).nombreFundacion }}
                                 </template>
                                 <template slot="historial" slot-scope="data">
                                     <base-button size="sm" outline type="success" @click="formularioHistorial(data.item)" >
@@ -85,18 +87,11 @@ import VueUploadMultipleImage from 'vue-upload-multiple-image'
             { key: 'edadMascota', label: 'Edad ' },
             { key: 'sexoMascota', label: ' Sexo' },
             { key: 'fundacion', label: 'Fundacion' },
-            { key: 'historial', label: 'Historial'}
+            { key: 'historial', label: 'Opciones'}
         ],
         fundaciones: [
-            { idFundacion: '1', nombre: 'Fundacion las Puertas del Cielo' },
-            { idFundacion: '2', nombre: 'Lo que el Agua se Llevo' },
-            { idFundacion: '3', nombre: 'El Espanta-Tiburones' }
         ],
-        especies: [
-            { idEspecie: '1', nombre: 'Mamifero Heterosexual' },
-            { idEspecie: '2', nombre: 'Reptil' },
-            { idEspecie: '3', nombre: 'Pez' }
-        ],
+        especies: [],
         veterinarias: [
             { idVeterinaria: '1', nombre: 'Vec-terinaria' },
             { idVeterinaria: '2', nombre: 'Pet-terinaria' }
@@ -182,12 +177,38 @@ import VueUploadMultipleImage from 'vue-upload-multiple-image'
             }
             dataRow.toggleDetails()
             this.loader = false
+        },
+        async getApiFundacion () {
+            this.fundaciones = []
+            await axios.get(this.servidor + 'FundacionController_ListAll.php').then(response => {
+                if (response.data) {
+                    response.data.forEach(fundacion => {
+                        if (!fundacion.msg) {
+                            this.fundaciones.push(fundacion)
+                        }
+                    })
+                }
+            })
+        },
+        async getApiEspecie () {
+            this.especies = []
+            await axios.get(this.servidor + 'EspecieController_ListAll.php').then(response => {
+                if (response.data) {
+                    response.data.forEach(especie => {
+                        if (!especie.msg) {
+                            this.especies.push(especie)
+                        }
+                    })
+                }
+            })
         }
     },
     watch: {
     },
     created: async function() {
         this.loader = true
+        await this.getApiFundacion()
+        await this.getApiEspecie()
         await this.apiMascotas()
         this.loader = false
     }

@@ -21,9 +21,15 @@
               </router-link>
             </li>
             <li class="nav-item">
-              <router-link class="nav-link nav-link-icon" to="/mascota">
+              <router-link class="nav-link nav-link-icon" to="/donacion">
                 <i class="fa fa-building"></i>
                 <span class="nav-link-inner--text">Fundaciones</span>
+              </router-link>
+            </li>
+            <li class="nav-item">
+              <router-link class="nav-link nav-link-icon" to="/albergue">
+                <i class="fa fa-building"></i>
+                <span class="nav-link-inner--text">Albergue</span>
               </router-link>
             </li>
             <li class="nav-item" v-if="!sesionActiva">
@@ -53,10 +59,6 @@
                         <router-link to="/perfil" class="dropdown-item">
                             <i class="ni ni-single-02"></i>
                             <span>Mi perfil</span>
-                        </router-link>
-                        <router-link to="/mascota" class="dropdown-item">
-                            <i class="fa fa-paw"></i>
-                            <span>Mascotas</span>
                         </router-link>
                         <div class="dropdown-divider"></div>
                         <b-button class="dropdown-item" @click="salirSesion">

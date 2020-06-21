@@ -113,9 +113,15 @@ export default new Vuex.Store({
         },
         setUserIsAuthenticated(state, replacement) {
             state.userIsAuthorize = replacement
+        },
+        setSesionActiva(state, sesionActiva) {
+            state.sesionActiva = sesionActiva
         }
     },
     actions: {
+        setSesionActiva() {
+            
+        },
         auth0Login(context) {
             context.state.auth0.authorize()
         },
@@ -133,6 +139,7 @@ export default new Vuex.Store({
                     localStorage.setItem('access_token', authResult.accessToken)
                     localStorage.setItem('id_token', authResult.idToken)
                     localStorage.setItem('expires_at', expiresAt)
+                    localStorage.setItem('sesionActiva', JSON.stringify(this.state.sesionActiva))
                     router.replace('/perfil')
 
                 } else if (err){
@@ -146,6 +153,7 @@ export default new Vuex.Store({
             localStorage.removeItem('access_token')
             localStorage.removeItem('id_token')
             localStorage.removeItem('expires_at')
+            localStorage.removeItem('sesionActiva')
             window.location.href = process.env.VUE_APP_DOMAINURL + '/login'
         }
     }

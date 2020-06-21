@@ -27,12 +27,13 @@
                                      @row-selected="seleccionado"
                                      responsive="sm"
                                      selected-variant="active"
-                                     select-mode="single">
+                                     select-mode="single"
+                                     :small="true">
                                 <template slot="fundacion" slot-scope="data">
                                     {{ (fundaciones.find(fundacion => { return fundacion.idFundacion === data.item.idFundacion } )).nombre }}
                                 </template>
                                 <template slot="opciones" slot-scope="data">
-                                    <base-button outline type="danger" @click="eliminarAlbergue(data.item)" >
+                                    <base-button outline type="danger" @click="eliminarAlbergue(data.item)" size="sm">
                                         <i class="fa fa-trash" aria-hidden="true"></i>
                                     </base-button>
                                 </template>
@@ -91,7 +92,7 @@ import {mapState} from 'vuex'
     methods: {
         async listar () {},
         abrirFormularioRegistro () {
-            this.$router.push('/albergue/registro')
+            this.$router.push({path: 'albergue/registro'})
         },
         formatearItems (usuarios) {
             const self = this

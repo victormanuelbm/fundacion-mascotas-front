@@ -60,7 +60,7 @@ const router = new Router({
           component: () => import('./views/usuario/formulario.vue')
         },
         {
-          path: 'usuario/',
+          path: '/usuario',
           name: 'usuario',
           component: () => import('./views/usuario/index.vue')
         },
@@ -76,28 +76,28 @@ const router = new Router({
           component: () => import('./views/donacion/formulario.vue')
         },
         {
-          path: 'donacion/',
+          path: '/donacion',
           name: 'donaciones',
           component: () => import('./views/donacion/index.vue')
         },
         {
-          path: 'donacion/modificar',
+          path: '/donacion/modificar',
           name: 'modificarDonacion',
           component: () => import('./views/donacion/formulario.vue'),
           props: (route) => ({ donacion: route.params.donacion })
         },
         {
-          path: 'albergue/registro',
+          path: '/albergue/registro',
           name: 'registroAlbergue',
           component: () => import('./views/albergue/formulario.vue')
         },
         {
-          path: 'albergue/',
+          path: '/albergue',
           name: 'albergues',
           component: () => import('./views/albergue/index.vue')
         },
         {
-          path: 'albergue/modificar',
+          path: '/albergue/modificar',
           name: 'modificarAlbergue',
           component: () => import('./views/albergue/formulario.vue'),
           props: (route) => ({ albergue: route.params.albergue })
@@ -129,13 +129,9 @@ router.beforeEach((to, from, next) => {
       && localStorage.getItem('expires_at')) {
     const expiresAt = JSON.parse(localStorage.getItem('expires_at'))
     routerAuthcheck = new Date().getTime() < expiresAt;
-    console.log(new Date().getTime())
-    console.log(expiresAt)
   }
   Store.commit('setUserIsAuthenticated', routerAuthcheck)
   if (to.matched.some(record => record.meta.requiresAuth)) {
-    // this route requires auth, check if logged in
-    // if not, redirect to login page.
     if (routerAuthcheck) {
       next()
     } else {
@@ -143,9 +139,9 @@ router.beforeEach((to, from, next) => {
     }
 
   } else {
-    console.log(6)
-    next() // make sure to always call next()!
+    next()
   }
+  Store.commit('setSesionActiva',  JSON.parse(localStorage.getItem('sesionActiva')))
 })
 
 export default router;

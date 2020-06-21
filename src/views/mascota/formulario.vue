@@ -42,7 +42,7 @@
                                         <div class="col-lg-4">
                                             <base-input label="Especie" :valid="validarEspecie">
                                                 <select class="form-control" v-model="model.idEspecie">
-                                                    <option v-for="especie in especies" :key="especie.idEspecie" :value="especie.idEspecie" >{{ especie.nombre }}</option>
+                                                    <option v-for="especie in especies" :key="especie.idEspecie" :value="especie.idEspecie" >{{ especie.nombreEspecie }}</option>
                                                 </select>
                                             </base-input>
                                         </div>
@@ -56,7 +56,7 @@
                                         <div class="col-lg-4">
                                             <base-input label="Fundación" :valid="validarFundacion">
                                                 <select class="form-control" v-model="model.idFundacion">
-                                                    <option v-for="fundacion in fundaciones" :key="fundacion.idFundacion" :value="fundacion.idFundacion" >{{ fundacion.nombre }}</option>
+                                                    <option v-for="fundacion in fundaciones" :key="fundacion.idFundacion" :value="fundacion.idFundacion" >{{ fundacion.nombreFundacion }}</option>
                                                 </select>
                                             </base-input>
                                         </div>
@@ -143,17 +143,8 @@ import VueUploadMultipleImage from 'vue-upload-multiple-image'
             extension: ''
         },
         imagen: undefined,
-        fundaciones: [
-            { idFundacion: '1', nombre: 'Michi Fundación' },
-            { idFundacion: '2', nombre: 'Fundación Huellitas' },
-            { idFundacion: '3', nombre: 'El jardin del Eden' }
-        ],
-        especies: [
-            { idEspecie: '1', nombre: 'Felino' },
-            { idEspecie: '2', nombre: 'Canino' },
-            { idEspecie: '3', nombre: 'Pez' },
-            { idEspecie: '4', nombre: 'reptil' }
-        ],
+        fundaciones: [],
+        especies: [],
         veterinarias: [
             { idVeterinaria: '1', nombre: 'Vec-terinaria' },
             { idVeterinaria: '2', nombre: 'Pet-terinaria' }
@@ -306,9 +297,41 @@ import VueUploadMultipleImage from 'vue-upload-multiple-image'
         },
         editImage (formData, index, fileList) {
             this.listaFotos = fileList
+        },
+        async getApiFundacion () {
+            this.fundaciones = []
+            await axios.get(this.servidor + 'FundacionController_ListAll.php').then(response => {
+                if (response.data) {
+                    response.data.forEach(fundacion => {
+                        if (!fundacion.msg) {
+                            this.fundaciones.push(fundacion)
+                        }
+                    })
+                }
+            }).catch(() => {
+                this.$toast.Error({
+                    title: 'Error',
+                    message: 'No se puede modificar cambios de la mascota'
+                })
+                return
+            });
+        },
+        async getApiEspecie () {
+            this.especies = []
+            await axios.get(this.servidor + 'EspecieController_ListAll.php').then(response => {
+                if (response.data) {
+                    response.data.forEach(especie => {
+                        if (!especie.msg) {
+                            this.especies.push(especie)
+                        }
+                    })
+                }
+            })
         }
     },
     created: function() {
+        this.getApiFundacion()
+        this.getApiEspecie()
         if (this.mascota) {
             this.model = {
                 ...this.mascota
