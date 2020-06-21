@@ -69,6 +69,38 @@ const router = new Router({
           name: 'modificarUsuario',
           component: () => import('./views/usuario/formulario.vue'),
           props: (route) => ({ usuario: route.params.usuario })
+        },
+        {
+          path: 'donacion/registro',
+          name: 'registroDonacion',
+          component: () => import('./views/donacion/formulario.vue')
+        },
+        {
+          path: 'donacion/',
+          name: 'donaciones',
+          component: () => import('./views/donacion/index.vue')
+        },
+        {
+          path: 'donacion/modificar',
+          name: 'modificarDonacion',
+          component: () => import('./views/donacion/formulario.vue'),
+          props: (route) => ({ donacion: route.params.donacion })
+        },
+        {
+          path: 'albergue/registro',
+          name: 'registroAlbergue',
+          component: () => import('./views/albergue/formulario.vue')
+        },
+        {
+          path: 'albergue/',
+          name: 'albergues',
+          component: () => import('./views/albergue/index.vue')
+        },
+        {
+          path: 'albergue/modificar',
+          name: 'modificarAlbergue',
+          component: () => import('./views/albergue/formulario.vue'),
+          props: (route) => ({ albergue: route.params.albergue })
         }
       ]
     },
