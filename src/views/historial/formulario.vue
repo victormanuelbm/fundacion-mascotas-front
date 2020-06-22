@@ -7,7 +7,7 @@
                         <div slot="header" class="bg-white border-0">
                             <div class="row align-items-center">
                                 <div class="col-8">
-                                    <h3 class="mb-0">Historial de Firulais</h3>
+                                    <h3 class="mb-0">Historial de Mascota</h3>
                                 </div>
                             </div>
                         </div>
@@ -26,18 +26,27 @@
                                         </div>-->
                                         <div class="col-lg-4">
                                             <base-input alternative=""
-                                                        label="Fecha de Revisión"
+                                                        label="Fecha del Historial"
                                                         input-classes="form-control-alternative"
-                                                        :valid="validarFechaRevision">
+                                                        :valid="validarFechaHistorialMascota">
                                                 <flat-picker slot-scope="{focus, blur}"
                                                             @on-open="focus"
                                                             @on-close="blur"
                                                             :config="{allowInput: true}"
                                                             class="form-control datepicker"
                                                             placeholder="Fecha de Revisión"
-                                                            v-model="model.fechaRevision">
+                                                            v-model="model.fechaHistorialMascota">
                                                 </flat-picker>
                                             </base-input>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <base-input alternative=""
+                                                        label="Observación"
+                                                        placeholder="Observación"
+                                                        input-classes="form-control-alternative"
+                                                        v-model="model.Observacion"
+                                                        :valid="validarObservacion"
+                                            />
                                         </div>
                                     </div>
                                 </div>
@@ -57,15 +66,6 @@
                                                 ></b-form-textarea>
                                             </base-input>
                                         </div>
-                                        <div class="col-lg-4">
-                                            <base-input alternative=""
-                                                        label="Observación"
-                                                        placeholder="Observación"
-                                                        input-classes="form-control-alternative"
-                                                        v-model="model.observacion"
-                                                        :valid="validarObservacion"
-                                            />
-                                        </div>
                                     </div>
                                     <div class="text-right" >
                                         <base-button outline @click="guardarCambios()" type="success">Guardar Cambios</base-button>
@@ -82,12 +82,18 @@
 <script>
 import flatPicker from 'vue-flatpickr-component'
 import 'flatpickr/dist/flatpickr.css'
+import axios from 'axios'
+import {mapState} from 'vuex'
   export default {
     components: {
       flatPicker
     },
-    name: 'historial',
+    name: 'registro',
     props: {
+        historial: {
+            type: Object,
+            required: false
+        },
         mascota: {
             type: Object,
             required: false
@@ -96,15 +102,16 @@ import 'flatpickr/dist/flatpickr.css'
     data() {
       return {
         model: {
-            idHistorial: undefined,
-            fechaRevision: '',
+            idHistorialMascota: undefined,
+            fechaHistorialMascota: '',
             descripcion: '',
-            observacion: '',
+            Observacion: '',
             idMascota: ''
         }
         }
     }, 
     computed: {
+        ...mapState(['servidor']),
         validarDescripcion () {
             if (this.model.descripcion === '') {
                 return false
@@ -115,51 +122,87 @@ import 'flatpickr/dist/flatpickr.css'
             return true
         },
         validarObservacion () {
-            if (this.model.observacion === '') {
+            if (this.model.Observacion === '') {
                 return false
             }
-            else if (this.model.observacion === undefined) {
+            else if (this.model.Observacion === undefined) {
                 return undefined
             }
             return true
         },
-        validarFechaRevision () {
-            if (this.model.fechaRevision === '') {
+        validarFechaHistorialMascota () {
+            if (this.model.fechaHistorialMascota === '') {
                 return false
             }
-            else if (this.model.fechaRevision === undefined) {
+            else if (this.model.fechaHistorialMascota === undefined) {
                 return undefined
             }
             return true
-        },
+        }
     },
     methods: {
         async guardarCambios () {
             if (!this.validacion()) {
                 this.$toast.info({
-                    title: 'No se puede guardar cambios de la Revision',
+                    title: 'No se puede guardar cambios del historial',
                     message: 'Existen campos vacios o no validos dentro del formulario'
                 })
                 return
-            } else {
-                this.$toast.success({
-                    title: 'Registro Exitoso',
-                    message: 'Se registro la Revision correctamente'
-                })
             }
+            if (this.historial) {
+                console.log('this.historial')
+                console.log(this.historial)
+                await axios.post(this.servidor + 'HistorialMascotaController_Edit.php', this.model)
+                .then(response => {
+                    this.$toast.success({
+                        title: 'Modificación Exitosa',
+                        message: 'Se modifico el historial correctamente'
+                    })
+                })
+                .catch(error => {
+                    this.$toast.Error({
+                        title: 'Error',
+                        message: 'No se puede modificar cambios del historial'
+                    })
+                    return
+                });
+            } else {
+                await axios.post(this.servidor + 'HistorialMascotaController_Insert.php', this.model)
+                .then(response => {
+                    this.$toast.success({
+                        title: 'Registro Exitoso',
+                        message: 'Se registro el historial correctamente'
+                    })
+                })
+                .catch(error => {
+                    this.$toast.Error({
+                        title: 'Error',
+                        message: 'No se puede guardar cambios del historial'
+                    })
+                    return
+                });
+                /*this.$toast.success({
+                    title: 'Registro Exitoso',
+                    message: 'Se registró el historial correctamente'
+                })*/
+            }
+            this.$router.push('/historialMascota')
         },
         validacion () {
-            if (this.validarDescripcion && this.validarFechaRevision && this.validarObservacion) {
+            if (this.validarDescripcion && this.validarFechaHistorialMascota && this.validarObservacion) {
                 return true
             }
             return false
         }
     },
     created: function() {
-        if (this.mascota) {
+        if (this.historial) {
             this.model = {
-                ...this.mascota
+                ...this.historial
             }
+        }
+        if (this.mascota) {
+            console.log(this.mascota)
         }
     }
   }

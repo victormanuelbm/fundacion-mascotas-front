@@ -59,17 +59,7 @@ const router = new Router({
           meta: { requiresAuth: true }
         },
         {
-<<<<<<< HEAD
-          path: '/usuario',
-=======
-          path: 'mascota/historial',
-          name: 'historialMascota',
-          component: () => import('./views/mascota/historial.vue'),
-          props: (route) => ({ mascota: route.params.mascota })
-        },
-        {
           path: 'usuario/',
->>>>>>> Historial mascota form
           name: 'usuario',
           component: () => import('./views/usuario/index.vue'),
           meta: { requiresAuth: true }
@@ -78,7 +68,6 @@ const router = new Router({
           path: 'usuario/modificar',
           name: 'modificarUsuario',
           component: () => import('./views/usuario/formulario.vue'),
-<<<<<<< HEAD
           props: (route) => ({ usuario: route.params.usuario }),
           meta: { requiresAuth: true }
         },
@@ -139,25 +128,23 @@ const router = new Router({
           component: () => import('./views/fundacion/formulario.vue'),
           props: (route) => ({ fundacion: route.params.fundacion }),
           meta: { requiresAuth: true }
-=======
-          props: (route) => ({ usuario: route.params.usuario })
         },
         {
-          path: 'fundacion/registro',
-          name: 'registroFundacion',
-          component: () => import('./views/fundacion/formulario.vue')
+          path: '/historialMascota/registro',
+          name: 'registroHistorialMascota',
+          component: () => import('./views/historial/formulario.vue'),
+          props: (route) => ({ mascota: route.params.mascota })
         },
         {
-          path: 'fundacion/',
-          name: 'fundacion',
-          component: () => import('./views/fundacion/index.vue')
+          path: '/historialMascota',
+          name: 'historialMascota',
+          component: () => import('./views/historial/index.vue')
         },
         {
-          path: 'fundacion/modificar',
-          name: 'modificarFundacion',
-          component: () => import('./views/fundacion/formulario.vue'),
-          props: (route) => ({ fundacion: route.params.fundacion })
->>>>>>> Vista de Fundacion
+          path: '/historialMascota/modificar',
+          name: 'modificarHistorialMascota',
+          component: () => import('./views/historial/formulario.vue'),
+          props: (route) => ({ historial: route.params.historial })
         }
       ]
     },

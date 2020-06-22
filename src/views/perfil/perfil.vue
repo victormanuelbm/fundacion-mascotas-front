@@ -19,23 +19,7 @@
                                 <div class="card card-profile shadow">
                                     <b-row class="justify-content-md-center">
                                         <div class="col-lg-2 form-group">
-<<<<<<< HEAD
                                             <foto :imagen="sesionActiva.foto"/>
-=======
-                                            <foto :imagen="fotografia.base64" :extension="fotografia.extension" />
-                                        </div>
-                                    </b-row>
-                                    <b-row class="justify-content-md-center">
-                                        <div class="col-lg-3 form-group">
-                                            <div class="input-group input-group-sm">
-                                                <b-form-file
-                                                    accept="image/jpeg, image/png, image/gif"
-                                                    @change="onFileSelected"
-                                                    placeholder="Escoger foto..."
-                                                    browse-text="Buscar"
-                                                    class="form-control form-control-sm"/>
-                                            </div>
->>>>>>> Historial mascota form
                                         </div>
                                     </b-row>
                                     <div class="card-body pt-0 pt-md-4">

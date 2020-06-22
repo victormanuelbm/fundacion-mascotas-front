@@ -22,18 +22,23 @@
                             <b-table striped
                                      hover
                                      selectable
-                                     :fields="camposTablaMascota"
-                                     :items="itemsMascota"
+                                     :fields="camposTablaFundacion"
+                                     :items="itemsFundacion"
                                      @row-selected="seleccionado"
                                      responsive="sm"
                                      selected-variant="active"
                                      select-mode="single">
+                                <template slot="opciones" slot-scope="data">
+                                    <base-button outline type="danger" @click="eliminarFundacion(data.item)" >
+                                        <i class="fa fa-trash" aria-hidden="true"></i>
+                                    </base-button>
+                                </template>
                                 <template slot="fundacion" slot-scope="data">
                                     {{ (fundaciones.find(fundacion => { return fundacion.idFundacion === data.item.idFundacion } )).nombre }}
                                 </template>
                                 <template slot="redsocial" slot-scope="data">
                                     <base-button @click="resetModal(data.item.idFundacion)" outline type="secondary" v-b-modal.modal>
-                                        <i class="fa fa-facebook" aria-hidden="true"></i>
+                                        <i class="fa fa-plus-circle" aria-hidden="true"></i>
                                     </base-button>
                                 </template>
                             </b-table>
@@ -60,42 +65,28 @@
 </template>
 <script>
 import 'flatpickr/dist/flatpickr.css'
+import axios from 'axios'
+import {mapState} from 'vuex'
+
   export default {
     components: {},
     name: 'index',
     data() {
       return {
-        itemsMascota: [
-            {
-	    idFundacion:"1",
-	    nombreFundacion:"FundacionAmigos",
-	    direccionFundacion:"cll8 #98-22",
-	    telefonoFundacion:"5742829",
-	    nit:"925689380-2",
-	    correo:"fundaamigos@gmail.com",
-	    nombrepropietario:"Prueba",
-	    idUsuario:"3"
-	       }
+        itemsFundacion: [
+            { nombreFundacion: 'Animalitos Felices', direccionFundacion: 'Calle 20 # 10', telefonoFundacion: '58994748', nit: '35276374', correo: 'fundacion1@gmail.com', nombrepropietario: 'Diego Navas', idUsuario: 1 },
+            { nombreFundacion: 'perritos y gaticos', direccionFundacion: 'av 6 # 7', telefonoFundacion: '5993838', nit: '89045805', correo: 'fundacion2@gmail.com', nombrepropietario: 'Jorge Mojica', idUsuario: 2 },
+            { nombreFundacion: 'animals', direccionFundacion: 'clle 7 # 8', telefonoFundacion: '5772939', nit: '5493850', correo: 'fundacion3@gmail.com', nombrepropietario: 'Richard Acevedo', idUsuario: 3 },
         ],
-        camposTablaMascota: [
+        camposTablaFundacion: [
             { key: 'nombreFundacion', label: 'Fundación' },
             { key: 'direccionFundacion', label: 'Dirección' },
             { key: 'telefonoFundacion', label: ' Teléfono' },
             { key: 'nit', label: 'Nit' },
             { key: 'correo', label: 'Correo Electrónico' },
-            { key: 'nombrepropietario', label: 'Propietario?'}
-        ],
-        fundaciones: [
-            { idFundacion: '1', nombre: 'Fundacion las Puertas del Cielo' }
-        ],
-        especies: [
-            { idEspecie: '1', nombre: 'Mamifero Heterosexual' },
-            { idEspecie: '2', nombre: 'Reptil' },
-            { idEspecie: '3', nombre: 'Pez' }
-        ],
-        veterinarias: [
-            { idVeterinaria: '1', nombre: 'Vec-terinaria' },
-            { idVeterinaria: '2', nombre: 'Pet-terinaria' }
+            { key: 'nombrepropietario', label: 'Propietario?'},
+            { key: 'opciones', label: 'Eliminar'},
+            { key: 'redsocial', label: 'Red Social'}
         ],
         loader: false,
         redSocial: { 
@@ -103,10 +94,12 @@ import 'flatpickr/dist/flatpickr.css'
             nombre: 'facebook',
             url: undefined,
             idFundacion: undefined
-         }
+        }
       }
     },
-    computed: {},
+    computed: {
+        ...mapState(['servidor'])
+    },
     methods: {
         async listar () {},
         handleOk() {
@@ -140,13 +133,47 @@ import 'flatpickr/dist/flatpickr.css'
                     fundacion: item[0]
                 }
             })
+        },
+        async apiFundacion () {
+            this.cargando = false
+            this.itemsFundacion = []
+            axios.get(this.servidor + 'FundacionController_ListAll.php').then(response => {
+                if (response.data.result) {
+                    this.$toast.error({
+                        title: 'Información',
+                        message: response.data.result
+                    })
+                } else {
+                    this.itemsFundacion = response.data
+                } 
+            }).catch(function (error) {
+                console.log(error)
+            })
+            // this.itemsMascota = []
+        },
+        async eliminarFundacion (fundacion) {
+            await axios.post(this.servidor + 'FundacionController_Delete.php', {
+                idFundacion: fundacion.idFundacion
+            }).then(response => {
+                this.$toast.success({
+                    title: 'Eliminación Exitosa',
+                    message: 'Se elimino correctamente.'
+                })
+                this.apiFundacion()
+            }).catch(function (error) {
+                console.log(error)
+                this.$toast.error({
+                    title: 'Error en la Eliminación',
+                    message: 'No se pudo eliminar la fundacion.'
+                })
+            })
         }
     },
     watch: {
     },
     created: async function() {
         this.loader = true
-        await this.listar()
+        await this.apiFundacion()
         this.loader = false
     }
   }

@@ -32,6 +32,12 @@
                 <span class="nav-link-inner--text">Donaciones</span>
               </router-link>
             </li>
+            <li class="nav-item" v-if="sesionActiva">
+              <router-link class="nav-link nav-link-icon" to="/historialMascota">
+                <i class="fa fa-address-card-o"></i>
+                <span class="nav-link-inner--text">Historial Mascota</span>
+              </router-link>
+            </li>
             <li class="nav-item" v-if="!sesionActiva">
               <b-button size="sm"
                         class="my-2 my-sm-0"
