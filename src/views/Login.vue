@@ -47,19 +47,24 @@
       </div>
     </div>
 
+    <b-row>
+      <b-col cols="10">
+        <b-card-group columns>
+          <b-card
+            v-for="(mascota, index) in mascotas"
+            :key="index"
+            :title="'Mi nombre es ' + mascota.foto_mascota_nombre + ', Adoptame!'"
+            :img-src="mascota.foto_mascota_ruta"
+            img-alt="Image"
+            img-top
+          >
+            <b-button :href="'/verMascota/' + 1" variant="primary">Ver Mascota</b-button>
+          </b-card>
+        </b-card-group>
+      </b-col>
 
-    <b-card-group columns>
-      <b-card
-        v-for="(mascota, index) in mascotas"
-        :key="index"
-        :title="'Mi nombre es ' + mascota.foto_mascota_nombre + ', Adoptame!'"
-        :img-src="mascota.foto_mascota_ruta"
-        img-alt="Image"
-        img-top
-      >
-        <b-button href="#" variant="primary">Ver Mascota</b-button>
-      </b-card>
-    </b-card-group>
+      <b-col>espacio para la publicidad</b-col>
+    </b-row>
   </div>
 </template>
 <script>
@@ -101,81 +106,6 @@ import axios from 'axios'
         }
     },
     methods: {
-        async ingresar () {
-            /*
-            const self = this
-            let usuario = {
-              nombres: 'John Jairo',
-              numeroDocumento: '10904791406'
-            }
-            this.$router.push('/perfil/')
-                axios.post(this.servidorSeguridad + 'auth/login', {
-                    ...this.model
-                })
-                .then(async function (response) {
-                    
-                    console.log('response')
-                    console.log(response)
-                    const datos = response.data.data
-                    if (!self.validarUsuarioActivo (datos)) {
-                        return false
-                    }
-                    self.$toast.success({
-                        title: 'Bienvenido',
-                        message: 'Login exitoso'
-                    })
-                    // self.menu = datos.menuExtended.hijos
-                    // console.log('menu ' + self.menu)
-                    // console.log(response.data.data)
-                    // console.log(response.data.data.menuExtended.hijos)
-                    self.$store.commit('iniciarSesion', response.data.data.menuExtended.hijos)
-                    usuario = response.data.data.usuario
-                    const sesion = (await axios.get(self.servidorAcceso + 'usuarios/usuarios/numeroDocumento/' + usuario)).data.data
-                    self.$store.commit('consultarSesion', sesion)
-                    self.$router.push('/perfil/')
-                })
-                .catch(error => {
-                    this.$toast.error({
-                        title: error.response.data.message,
-                        message: 'La contraseña o correo es incorrecto'
-                    })
-                    return
-                })
-            */
-        },
-        ingresarAux () {
-            const self = this
-            if (this.model.password === '' || this.model.correo === '' || this.model.password === undefined || this.model.correo === undefined) {
-              this.$toast.info({
-                title: 'Campos Vacios',
-                message: 'Por favor ingrese un correo y una contraseña valida'
-              })
-              return
-            }
-            const valido = this.usuarios.find(function (u) {
-              return u.correo === self.model.correo && u.password === self.model.password
-            })
-            if (valido === undefined) {
-              this.$toast.info({
-                title: 'Login Fallido',
-                message: 'El correo o la contraseña no son de un usuario existente'
-              })
-              return
-            }
-            self.$toast.success({
-                title: 'Bienvenido',
-                message: 'Login exitoso'
-            })
-            const correo = valido.correo
-            this.$store.commit('cambiarEstadoCuenta', correo)
-            // this.$store.commit('sesionActiva', valido)
-            this.$store.commit('consultarSesion', valido)
-            this.$router.push('/perfil')
-        },
-        limpiarCampos () {
-            this.model.password = ''
-            this.model.correo = ''
-        },
         validarUsuarioActivo (datos) {
             if (datos.menuExtended.estado !== 'ACTIVO') {
                 this.$toast.error({
@@ -196,7 +126,7 @@ import axios from 'axios'
       async apiMascotasrandom () {
         this.loader = true
         this.itemsMascota = []
-        axios.get(this.servidor + 'FotoController_List_Random.php').then(response => {
+        axios.get(this.servidor + 'MascotaController_ListAll_Random.php').then(response => {
           if (response.data.result) {
             this.$toast.error({
               title: 'Información',
@@ -207,6 +137,14 @@ import axios from 'axios'
           } 
         }).catch(() => {})
         this.loader = false
+      },
+      mostrarMascota (item) {
+          this.$router.push({
+            name: 'verMascota',
+            params: {
+              mascota: item
+            }
+          })
       }
     },
     created () {

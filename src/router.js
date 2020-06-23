@@ -128,6 +128,12 @@ const router = new Router({
           component: () => import('./views/fundacion/formulario.vue'),
           props: (route) => ({ fundacion: route.params.fundacion }),
           meta: { requiresAuth: true }
+        },
+        {
+          path: '/verMascota/:idMascota',
+          name: 'verMascota',
+          props: true,
+          component: () => import('./views/mascota/verMascota.vue')
         }
       ]
     },
@@ -139,7 +145,7 @@ const router = new Router({
         {
           path: '/login',
           name: 'login',
-          component: () => import(/* webpackChunkName: "demo" */ './views/Login.vue')
+          component: () => import('./views/Login.vue')
         }
       ]
     }

@@ -68,7 +68,7 @@
     </base-nav>
 
           <base-header class="header pb-8 pt-5 pt-lg-8 d-flex align-items-center"
-            style="min-height: 200px; background-image: url(img/logo_completo.jpg); background-size: cover; background-position: center top;">
+            style="min-height: 200px; background-image: url(/img/logo_completo.jpg); background-size: cover; background-position: center top;">
             <!-- Mask -->
             <span class="mask bg-gradient-success opacity-6"></span>
           </base-header>

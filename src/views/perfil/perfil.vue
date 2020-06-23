@@ -53,13 +53,6 @@
                                                 />
                                             </div>
                                             <div class="col-lg-4">
-                                                <base-input label="Tipo de Usuario" :valid="validarTipoUsuario">
-                                                    <select class="form-control" v-model="model.idTipoUsuario" >
-                                                        <option v-for="tipo in tiposUsuario" :key="tipo.idTipoUsuario" :value="tipo.idTipoUsuario" >{{ tipo.nombre }}</option>
-                                                    </select>
-                                                </base-input>
-                                            </div>
-                                            <div class="col-lg-4">
                                                 <base-input alternative=""
                                                             label="Dirección"
                                                             placeholder="dirección"
@@ -75,15 +68,7 @@
                                                             input-classes="form-control-alternative"
                                                             v-model="model.correo"
                                                             :valid="validarEmail"
-                                                />
-                                            </div>
-                                            <div class="col-lg-4">
-                                                <base-input alternative=""
-                                                            label="Estado"
-                                                            placeholder=""
-                                                            input-classes="form-control-alternative"
-                                                            v-model="model.estado"
-                                                            :valid="validarEstado"
+                                                            disabled
                                                 />
                                             </div>
                                             <div class="col-lg-4">
@@ -103,7 +88,7 @@
                                             </div>
                                         </div>
                                         <div class="text-right" >
-                                            <base-button outline @click="actualizar()" type="success">Actualizar Información</base-button>
+                                            <base-button outline @click="guardarCambios()" type="success">Actualizar Información</base-button>
                                         </div>
                                     </div>
                                 </div>
@@ -121,6 +106,7 @@ import 'flatpickr/dist/flatpickr.css'
 import moment from 'moment'
 import {mapState} from 'vuex'
 import foto from './foto'
+import axios from 'axios'
   export default {
     components: {
       flatPicker,
@@ -156,7 +142,7 @@ import foto from './foto'
       }
     },
     computed: {
-        ...mapState(['servidorAcceso','sesionActiva']),
+        ...mapState(['servidor','sesionActiva']),
         validarNombres () {
             if (this.model.nombreUsuario === '') {
                 return false
@@ -204,29 +190,11 @@ import foto from './foto'
             }
             return false
         },
-        validarEstado () {
-            if (this.model.estado === '') {
-                return false
-            }
-            else if (this.model.estado === undefined) {
-                return undefined
-            }
-            return true
-        },
         validarFechaNacimiento () {
             if (this.model.fechaNacimiento === '') {
                 return false
             }
             else if (this.model.fechaNacimiento === undefined) {
-                return undefined
-            }
-            return true
-        },
-        validarTipoUsuario () {
-            if (this.model.idTipoUsuario === '') {
-                return false
-            }
-            else if (this.model.idTipoUsuario === undefined) {
                 return undefined
             }
             return true
@@ -244,26 +212,54 @@ import foto from './foto'
     methods: {
         async onFileSelected() {},
         async actualizarFoto () {},
-        async actualizar () {
-            if (this.validacion) {
-                this.$toast.success({
-                    title: 'Formulario',
-                    message: 'Este formullario esta validado'
+        async guardarCambios () {
+            if (this.validacion()) {
+                this.loader = true
+                await axios.post(this.servidor + 'UsuarioController_Insert.php', {
+                    ...this.model
+                }).then(response => {
+                    this.$toast.info({
+                        title: 'Registro Exitoso',
+                        message: 'Se culmino el proceso de registro correctamente.'
+                    })
+                }).catch((error) => {
+                    console.log(error)
                 })
+                this.loader = false
             } else {
                 this.$toast.error({
                     title: 'Formulario',
-                    message: 'Este formullario esta validado'
+                    message: 'Todos los campos son requeridos'
                 })
             }
         },
         async apiTipoUsuario () {},
         validacion () {
-            if (this.validarNombres && this.validarApellidos && this.validarTipoUsuario && this.validarTipoDocumento
-            && this.validarNumeroDocumento && this.validarEmail && this.validarEstado && this.validarFechaNacimiento) {
+            console.log(this.model)
+            if (this.validarNombres && this.validarApellidos && this.validarNumeroDocumento && this.validarEmail && this.validarFechaNacimiento) {
                 return true
             }
             return false
+        },
+        async consultarUsuario() {
+            this.loader = true
+            await axios.post(this.servidor + 'UsuarioController_ListByCorreo.php', {
+                correo: this.model.correo
+            }).then(response => {
+                if (response.data.result) {
+                    this.$toast.info({
+                        title: 'Registro de Usuario',
+                        message: 'Por favor complemente la información de su perfil.'
+                    })
+                } else {
+                    this.model = {
+                        ...response.data[0]
+                    }
+                }
+            }).catch((error) => {
+                console.log(error)
+            })
+            this.loader = false
         }
     },
     created: async function() {
@@ -276,6 +272,7 @@ import foto from './foto'
                 ...this.sesionActiva
             }
         }
+        await this.consultarUsuario()
         this.loader = false
     }
   }
