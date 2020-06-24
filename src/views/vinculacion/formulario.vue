@@ -49,7 +49,7 @@
                       <base-input
                         alternative
                         label="Telefono"
-                        placeholder="Telefono de la Vinculacion"
+                        placeholder="Telefono de la vinculacion"
                         input-classes="form-control-alternative"
                         v-model="model.TelefonoVinculacion"
                         :valid="validarTelefono"
