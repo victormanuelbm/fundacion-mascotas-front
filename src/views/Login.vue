@@ -15,7 +15,15 @@
                       @sliding-start="onSlideStart"
                       @sliding-end="onSlideEnd"
           >
-            <!-- Text slides with image -->
+
+            <b-carousel-slide caption="Porque mimar a tu mascota es de grandes dueños."
+                              :img-src="require('../assets/Banners/Banner1.png')">
+              <h1>PetBro Store</h1>
+            </b-carousel-slide>
+
+            <b-carousel-slide caption="PetBro"
+                              :img-src="require('../assets/Banners/Banner2.png')">
+            </b-carousel-slide>
             <b-carousel-slide caption="Fundación Huellitas"
                               img-src="https://www.65ymas.com/uploads/s1/65/73/5/bigstock-dog-beagle-having-fun-running-294325987-1.jpeg"
             ></b-carousel-slide>
@@ -24,23 +32,6 @@
             <b-carousel-slide caption="Fundación Huellitas"
                               img-src="https://www.minsalud.gov.co/fotoscarrusel2017/vacunacioon_mascota.jpg">
               <h1>HOLA AMIGUITOSS!</h1>
-            </b-carousel-slide>
-
-            <!-- Slides with image only -->
-            <b-carousel-slide caption="Michi Fundación"
-                              img-src="https://picsum.photos/1024/480/?image=58"></b-carousel-slide>
-
-            <!-- Slides with img slot -->
-            <!-- Note the classes .d-block and .img-fluid to prevent browser default image alignment -->
-            <b-carousel-slide caption="Michi Fundación">
-              <template v-slot:img>
-                <img class="d-block img-fluid w-100"
-                     width="1024"
-                     height="480"
-                     src="https://picsum.photos/1024/480/?image=55"
-                     alt="image slot"
-                >
-              </template>
             </b-carousel-slide>
           </b-carousel>
         </card>
@@ -53,12 +44,12 @@
           <b-card
             v-for="(mascota, index) in mascotas"
             :key="index"
-            :title="'Mi nombre es ' + mascota.foto_mascota_nombre + ', Adoptame!'"
+            :title="'Mi nombre es ' + mascota.nombreMascota + ', Adoptame!'"
             :img-src="mascota.foto_mascota_ruta"
             img-alt="Image"
             img-top
           >
-            <b-button :href="'/verMascota/' + 1" variant="primary">Ver Mascota</b-button>
+            <b-button @click="mostrarMascota(mascota)" variant="primary">Ver Mascota</b-button>
           </b-card>
         </b-card-group>
       </b-col>

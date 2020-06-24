@@ -78,14 +78,19 @@
                                         </div>
                                         <div class="col-lg-4">
                                             <base-input alternative=""
-                                                        label="Foto de la Fundación"
+                                                        label="Foto de la Mascota"
                                                         input-classes="form-control-alternative">
-                                                <b-form-file
-                                                    @change="ingresoFile"
-                                                    class="btn btn-primary btn-sm" plain
-                                                    accept=".jpg, .png, .gif, .jpeg"
-                                                    placeholder="Escojer foto..."
-                                                    browse-text="Buscar"/>
+                                                <vue-upload-multiple-image
+                                                    @upload-success="uploadImageSuccess"
+                                                    @before-remove="beforeRemove"
+                                                    @edit-image="editImage"
+                                                    :data-images="images"
+                                                    idUpload="myIdUpload"
+                                                    editUpload="myIdEdit"
+                                                    dragText="Seleccione o arrastre una foto..."
+                                                    browseText="Haz click aqui"
+                                                    :maxImage="1"
+                                                ></vue-upload-multiple-image>
                                             </base-input>
                                         </div>
                                     </div>
@@ -105,9 +110,10 @@
 import 'flatpickr/dist/flatpickr.css'
 import axios from 'axios'
 import {mapState} from 'vuex'
+import VueUploadMultipleImage from 'vue-upload-multiple-image'
 
   export default {
-    components: {},
+    components: {VueUploadMultipleImage},
     name: 'registro',
     props: {
         fundacion: {
@@ -133,8 +139,9 @@ import {mapState} from 'vuex'
             extension: ''
         },
         imagen: undefined,
- 
-        usuarios: []
+        usuarios: [],
+        listaFotos: [],
+        images: undefined
       }
     },
     computed: {
@@ -228,6 +235,7 @@ import {mapState} from 'vuex'
                         title: 'Modificación Exitosa',
                         message: 'Se modifico la fundacion correctamente'
                     })
+                    this.insertarImagenes(response.data[0])
                 })
                 .catch(() => {
                     this.$toast.Error({
@@ -238,14 +246,16 @@ import {mapState} from 'vuex'
                 });
             } else {
                 await axios.post(this.servidor + 'FundacionController_Insert.php', this.model)
-                .then(() => {
+                .then(response => {
                     this.$toast.success({
                         title: 'Registro Exitoso',
                         message: 'Se registro la fundación correctamente'
                     })
+                    console.log(response.data)
+                    this.insertarImagenes(response.data[0])
                 })
                 .catch(() => {
-                    this.$toast.Error({
+                    this.$toast.error({
                         title: 'Error',
                         message: 'No se puede guardar cambios de la fundación'
                     })
@@ -253,6 +263,17 @@ import {mapState} from 'vuex'
                 });
             }
             this.$router.push('/fundacion')
+        },
+        async insertarImagenes (idFundacion) {
+                var formDa = new FormData()
+                const arrayFotos = []
+                if (this.listaFotos && this.listaFotos.length > 0) {
+                    this.listaFotos.forEach((foto, index) => {
+                        formDa.append('fundacion_foto_ruta_1', foto.path)
+                    })
+                }
+                formDa.append('idFundacion', idFundacion)
+                await axios.post(this.servidor + 'Fundacion_fotoController_1.php', formDa)
         },
         validacion () {
             if (this.validarNombre && this.validarDireccion && this.validarTelefono && this.validarNIT
@@ -272,6 +293,16 @@ import {mapState} from 'vuex'
                     })
                 }
             })
+        },
+        uploadImageSuccess(formData, index, fileList) {
+            this.listaFotos = fileList
+        },
+        beforeRemove (index, done, fileList) {
+            done()
+            this.listaFotos = fileList
+        },
+        editImage (formData, index, fileList) {
+            this.listaFotos = fileList
         }
     },
     created: async function() {

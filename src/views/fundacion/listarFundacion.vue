@@ -3,99 +3,33 @@
     <div class="row">
       <div class="col-xl-12 order-xl-1">
         <card shadow type="secondary">
-          <b-carousel id="carousel-1"
-                      v-model="slide"
-                      :interval="3000"
-                      controls
-                      indicators
-                      background="#ababab"
-                      img-width="1024"
-                      img-height="400"
-                      style="text-shadow: 1px 1px 2px #333;"
-                      @sliding-start="onSlideStart"
-                      @sliding-end="onSlideEnd"
-                      class="w-100 d-block"
-          >
-            <!-- Text slides with image -->
-           <b-carousel-slide caption="Fundación Huellitas"
-                             v-for="(item, index) in fotos"
-                             :key="index">
-            <template v-slot:img>
-              <b-img
-                fluid
-                center
-                width="1024"
-                height="480"
-                :src="item.foto_mascota_ruta"
-                alt="image slot"
-                v-bind="{ width: 150, height: 150, class: 'm1' }"
-              ></b-img>
-            </template>
-          </b-carousel-slide>
-          </b-carousel>
-            
-        </card>
-        <b-row>
           <b-col cols="10">
-            <b-card-group deck>
-              <b-card bg-variant="success" class="text-center" text-variant="black" :header="mascota.nombreMascota">
+            <h4>Left and Right (or Start and End)</h4>
+            <b-card img-src="https://placekitten.com/300/300" img-alt="Card image" img-left class="mb-3">
                 <b-card-text>
-                  <p>EDAD: {{ mascota.edadMascota }}</p>
-                  <p>INGRESO: {{ mascota.fechaIngreso }}</p>
-                  <p><b-badge variant="primary">Dona 5 dolares para apoyar mi fundación.</b-badge></p>
-                  <div ref="paypal"></div>
+                    Some quick example text to build on the card and make up the bulk of the card's content.
                 </b-card-text>
-              </b-card>
-              <b-card bg-variant="warning" width="100" text-variant="black" header="Un amigo es para siempre." class="text-center">
+             </b-card>
+            <b-card img-src="https://placekitten.com/300/300" img-alt="Card image" img-right>
                 <b-card-text>
-                  <p>
-                    <b-badge variant="primary" v-if="!sesionActiva">
-                      Si deseas apadrinar o adoptar esta mascota debes iniciar sesión.
-                    </b-badge>
-                  </p>
-                  <p>
-                    <b-button variant="success" :disabled="!sesionActiva">
-                      <i class="fa fa-paw" aria-hidden="true"></i>
-                        <h3>Adopta un amigo</h3>
-                      </b-button>
-                  </p>
-                  <br>
-                  <p>
-                    <b-button variant="secondary" :disabled="!sesionActiva">
-                      <i class="fa fa-medkit" aria-hidden="true"></i>
-                        <h3>Apadrina un amigo</h3>
-                    </b-button>
-                  </p>
+                    Some quick example text to build on the card and make up the bulk of the card's content.
                 </b-card-text>
-              </b-card>
-            </b-card-group>
+            </b-card>
           </b-col>
           <b-col>
             espacio para la publicidad
           </b-col>
-        </b-row>
-
+        </card>
       </div>
     </div>
-
-    <b-row>
-      <b-col cols="10">
-        formulario mascoitas
-      </b-col>
-    </b-row>
   </div>
 </template>
 <script>
 import {mapState, mapMutations} from 'vuex'
 import axios from 'axios'
   export default {
-    name: 'verMascota',
-    props: {
-      mascota: {
-        requered: true,
-        type: Object
-      }
-    },
+    name: 'listarMascota',
+    props: {},
     data() {
       return {
         model: {
@@ -131,13 +65,6 @@ import axios from 'axios'
             }
             return true
         }
-    },
-    mounted: function() {
-      const script = document.createElement("script");
-      script.src =
-        "https://www.paypal.com/sdk/js?client-id=ARJ1eB06FibH4NMZ0VnE9-MDus6ZvbD8boXp6px362tV3TR-ZXhCAoBdvu8dM4J3TYVNvaeiOC_wiD45";
-      script.addEventListener("load", this.setLoaded);
-      document.body.appendChild(script);
     },
     methods: {
         ingresarAux () {
@@ -246,7 +173,7 @@ import axios from 'axios'
     async created () {
       console.log(this.sesionActiva)
       // await this.apiMascotasrandom()
-      await this.mostrarImagenMascote()
+      // await this.mostrarImagenMascote()
     }
   }
 </script>

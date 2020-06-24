@@ -8,28 +8,18 @@
                   containerClasses="px-0 container"
                   expand>
         <ul class="navbar-nav form-inline mr-3 d-none d-md-flex ml-lg-auto py-3">
+            <li class="nav-item">
+              <b-button size="sm"
+                      class="my-2 my-sm-0 px-2"
+                      @click="abrirTienda()">
+                        <i class="fa fa-shopping-bag"></i>
+                        <span class="nav-link-inner--text">Tienda</span>
+              </b-button>
+            </li>
             <li class="nav-item" v-if="sesionActiva">
-              <router-link class="nav-link nav-link-icon" to="/mascota">
+              <router-link class="nav-link nav-link-icon" to="/listarFundacion">
                 <i class="fa fa-shopping-bag"></i>
-                <span class="nav-link-inner--text">Tienda</span>
-              </router-link>
-            </li>
-            <li class="nav-item" v-if="sesionActiva">
-              <router-link class="nav-link nav-link-icon" to="/mascota">
-                <i class="fa fa-paw"></i>
-                <span class="nav-link-inner--text">Mascotas</span>
-              </router-link>
-            </li>
-            <li class="nav-item" v-if="sesionActiva">
-              <router-link class="nav-link nav-link-icon" to="/fundacion">
-                <i class="fa fa-building"></i>
                 <span class="nav-link-inner--text">Fundaciones</span>
-              </router-link>
-            </li>
-            <li class="nav-item" v-if="sesionActiva">
-              <router-link class="nav-link nav-link-icon" to="/donacion">
-                <i class="fa fa-credit-card"></i>
-                <span class="nav-link-inner--text">Donaciones</span>
               </router-link>
             </li>
             <li class="nav-item" v-if="!sesionActiva">
@@ -41,7 +31,7 @@
                           Ingresar
               </b-button>
             </li>
-            <li class="nav-item dropdown px-0 my-1" v-else>
+            <li class="nav-item dropdown px-5 my-1" v-else>
                 <base-dropdown class="nav-link pr-0">
                     <div class="media align-items-center" slot="title">
                 <span class="avatar avatar-lg rounded-circle">
@@ -59,6 +49,18 @@
                         <router-link to="/perfil" class="dropdown-item">
                             <i class="ni ni-single-02"></i>
                             <span>Mi perfil</span>
+                        </router-link>
+                        <router-link to="/mascota" class="dropdown-item">
+                            <i class="ni ni-single-02"></i>
+                            <span>Gestión de Mascota</span>
+                        </router-link>
+                        <router-link to="/fundacion" class="dropdown-item">
+                            <i class="ni ni-single-02"></i>
+                            <span>Gestión de Fundaciones</span>
+                        </router-link>
+                        <router-link to="/donacion" class="dropdown-item">
+                            <i class="ni ni-single-02"></i>
+                            <span>Colsulta de Donaciones</span>
                         </router-link>
                         <div class="dropdown-divider"></div>
                         <b-button class="dropdown-item" @click="salirSesion">
@@ -127,6 +129,9 @@ export default {
     },
     salirSesion() {
       this.$store.dispatch('auth0Logout')
+    },
+    abrirTienda () {
+      window.location.href = 'http://storepetbro.tk/'
     }
   },
   created: async function() {

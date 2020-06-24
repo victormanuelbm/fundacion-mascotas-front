@@ -138,7 +138,8 @@ import axios from 'axios'
             { idTipoUsuario: '2', nombre: 'Veterinario' },
             { idTipoUsuario: '3', nombre: 'Representante Fundación' }
         ],
-        loader: false
+        loader: false,
+        existe: false
       }
     },
     computed: {
@@ -215,13 +216,21 @@ import axios from 'axios'
         async guardarCambios () {
             if (this.validacion()) {
                 this.loader = true
-                await axios.post(this.servidor + 'UsuarioController_Insert.php', {
+                let servicioGuardarCambios = ''
+                if (this.existe) {
+                    servicioGuardarCambios = 'UsuarioController_Edit.php'
+                } else {
+                    servicioGuardarCambios = 'UsuarioController_Insert.php'
+                }
+                await axios.post(this.servidor + servicioGuardarCambios, {
                     ...this.model
                 }).then(response => {
                     this.$toast.info({
                         title: 'Registro Exitoso',
                         message: 'Se culmino el proceso de registro correctamente.'
                     })
+                    this.existe = true
+                    this.consultarUsuario()
                 }).catch((error) => {
                     console.log(error)
                 })
@@ -251,6 +260,7 @@ import axios from 'axios'
                         title: 'Registro de Usuario',
                         message: 'Por favor complemente la información de su perfil.'
                     })
+                    this.existe = true
                 } else {
                     this.model = {
                         ...response.data[0]

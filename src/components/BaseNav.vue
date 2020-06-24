@@ -9,7 +9,7 @@
             <slot name="brand">
                 <router-link to="/login"
                              class="h4 mb-0 text-white text-uppercase d-none d-lg-inline-block">
-                    <b-img v-bind="mainProps" rounded="circle" :src="require('../assets/logo.jpeg')" alt="Circle image"></b-img>
+                    <b-img v-bind="mainProps" :src="require('../assets/logo.png')" alt="Circle image"></b-img>
                 </router-link>
             </slot>
             <navbar-toggle-button v-if="showToggleButton"
@@ -76,7 +76,7 @@
     data() {
       return {
         toggled: false,
-        mainProps: { width: 60, height: 50, class: 'm1' }
+        mainProps: { width: 60, height: 70, class: 'm1' }
       };
     },
     methods: {

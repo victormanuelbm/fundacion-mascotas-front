@@ -130,10 +130,17 @@ const router = new Router({
           meta: { requiresAuth: true }
         },
         {
-          path: '/verMascota/:idMascota',
+          path: '/verMascota',
           name: 'verMascota',
           props: true,
-          component: () => import('./views/mascota/verMascota.vue')
+          component: () => import('./views/mascota/verMascota.vue'),
+          props: (route) => ({ mascota: route.params.mascota })
+        },
+        {
+          path: '/listarFundacion',
+          name: 'listarFundacion',
+          props: true,
+          component: () => import('./views/fundacion/listarFundacion.vue')
         }
       ]
     },
