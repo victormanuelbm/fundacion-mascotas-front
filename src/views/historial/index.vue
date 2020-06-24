@@ -27,7 +27,7 @@
                                 </template>-->
                                 <template slot="eliminar" slot-scope="data">
                                     <base-button outline type="danger" @click="eliminarHistorial(data.item)" >
-                                    <i class="fa fa-trash" aria-hidden="true"></i>
+                                        <i class="fa fa-trash" aria-hidden="true"></i>
                                     </base-button>
                                 </template>
                             </b-table>

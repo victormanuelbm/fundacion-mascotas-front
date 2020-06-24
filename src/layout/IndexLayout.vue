@@ -34,7 +34,7 @@
             </li>
             <li class="nav-item" v-if="sesionActiva">
               <router-link class="nav-link nav-link-icon" to="/historialMascota">
-                <i class="fa fa-address-card-o"></i>
+                <i class="fas fa-history"></i>
                 <span class="nav-link-inner--text">Historial Mascota</span>
               </router-link>
             </li>

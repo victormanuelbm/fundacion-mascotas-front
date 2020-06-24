@@ -37,20 +37,19 @@
                                     {{ (fundaciones.find(fundacion => { return fundacion.idFundacion === data.item.idFundacion } )).nombre }}
                                 </template>
                                 <template slot="redsocial" slot-scope="data">
-                                    <base-button @click="resetModal(data.item.idFundacion)" outline type="secondary" v-b-modal.modal>
-                                        <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                                    <base-button @click="resetModal(data.item.idFundacion)" outline type="primary" v-b-modal.modal>
+                                        <i class="fab fa-facebook" aria-hidden="true"></i>
                                     </base-button>
                                 </template>
                             </b-table>
-                            <b-modal @ok="handleOk" id="modal" title="Registro red social" ok-title="Registrar" cancel-title="Cancelar">
+                            <b-modal @ok="handleOk" id="modal" title="Registro Red Social" ok-title="Registrar" cancel-title="Cancelar">
                                 <p class="my-4">{{ idFundacion }}</p>
                                  <base-input alternative=""
                                                         label="Link de Facebook"
-                                                        placeholder="Link de Facebook"
+                                                        placeholder="Link"
                                                         input-classes="form-control-alternative"
                                                         v-model="redSocial.url"
                                             />
-
                             </b-modal>
 
                             <div class="text-center" v-if="loader">
@@ -98,19 +97,56 @@ import {mapState} from 'vuex'
       }
     },
     computed: {
-        ...mapState(['servidor'])
+        ...mapState(['servidor']),
+        validarUrl () {
+            if (this.redSocial.url === '') {
+                return false
+            }
+            else if (this.redSocial.url === undefined) {
+                return undefined
+            }
+            return true
+        }
     },
     methods: {
         async listar () {},
-        handleOk() {
+        async handleOk() {
             console.log(this.redSocial)
+            if (!this.validacion()) {
+                this.$toast.info({
+                    title: 'No se puede guardar cambios de la red social',
+                    message: 'Existen campos vacios o no validos dentro del formulario'
+                })
+                return
+            } else {
+                await axios.post(this.servidor + 'RedsocialController_Insert.php', this.redSocial)
+                .then(response => {
+                    this.$toast.success({
+                        title: 'Registro Exitoso',
+                        message: 'Se registro la red social correctamente'
+                    })
+                })
+                .catch(error => {
+                    this.$toast.Error({
+                        title: 'Error',
+                        message: 'No se puede guardar cambios de la red social'
+                    })
+                    return
+                });
+            }
         },
-        resetModal(idFundacion) {
+        validacion () {
+            if (this.validarUrl) {
+                return true
+            }
+            return false
+        },
+        resetModal(idF) {
             this.redSocial = { 
                 idRedSocial: undefined,
                 nombre: 'facebook',
                 url: undefined,
-                idFundacion: idFundacion
+                idFundacion: idF
             }
         },
         abrirFormularioRegistro () {

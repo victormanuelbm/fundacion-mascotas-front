@@ -38,10 +38,10 @@
                                 </template>
                                 <template slot="historial" slot-scope="data">
                                     <base-button size="sm" outline type="success" @click="resetModal(data.item.idMascota)" v-b-modal.modal>
-                                    <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                                        <i class="fa fa-plus-circle" aria-hidden="true"></i>
                                     </base-button>
                                     <base-button size="sm" outline type="danger" @click="eliminarMascota(data.item)" >
-                                    <i class="fa fa-trash" aria-hidden="true"></i>
+                                        <i class="fa fa-trash" aria-hidden="true"></i>
                                     </base-button>
                                     <b-button size="sm" type="secondary" @click="mostrarImagenMascote(data)" class="mr-2">
                                         {{ data.detailsShowing ? 'Ocultar' : 'Ver'}}
@@ -56,7 +56,6 @@
                                 </template>
                             </b-table>
                             <b-modal @ok="handleOk" id="modal" title="Registro Historial Mascota" ok-title="Registrar" cancel-title="Cancelar">
-                                <p class="my-4">{{ itemsMascota.idFundacion }}</p>
                                 <base-input alternative=""
                                                         label="Fecha del Historial"
                                                         input-classes="form-control-alternative"
@@ -235,14 +234,14 @@ import foto from './foto'
                 }
             })
         },
-        formularioHistorial (item) {
+        /*formularioHistorial (item) {
             this.$router.push({
                 name: 'registroHistorialMascota',
                 params: {
                     mascota: item[0]
                 }
             })
-        },
+        },*/
         async apiMascotas () {
             this.loader = true
             this.itemsMascota = []
