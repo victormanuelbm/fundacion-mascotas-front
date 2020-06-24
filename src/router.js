@@ -158,6 +158,12 @@ const router = new Router({
           name: 'modificarHistorialMascota',
           component: () => import('./views/historial/formulario.vue'),
           props: (route) => ({ historial: route.params.historial })
+        },
+        {
+          path: '/contacto',
+          name: 'contacto',
+          component: () => import('./views/contacto/contacto.vue'),
+          props: (route) => ({ fundacion: route.params.fundacion })
         }
       ]
     },

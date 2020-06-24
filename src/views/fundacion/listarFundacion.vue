@@ -3,7 +3,8 @@
     <div class="row">
       <div class="col-xl-12 order-xl-1">
         <card shadow type="secondary">
-          <b-col cols="10">
+          <b-row>
+          <b-col cols="9">
             <h1>FUNDACIONES</h1>
             <b-card :img-src="fundacion.nombrepropietario"
                     img-alt="Card image"
@@ -46,10 +47,37 @@
                     <i class="fab fa-facebook" aria-hidden="true"></i>
                   </base-button>
                 </p>
+                <p>
+                  <b-badge variant="primary">
+                    Contactar: 
+                  </b-badge>
+                  <base-button size="sm" outline type="primary" class="mx-2" @click="paginaContacto(fundacion)">
+                    <i class="fa fa-podcast" aria-hidden="true"></i>
+                  </base-button>
+                </p>
               </b-card-text>
             </b-card>
           </b-col>
-          <b-col></b-col>
+          <b-col>
+            <div class="clearfix">
+              <b-badge variant="primary">
+                Espacio publicitario.
+              </b-badge>
+              <b-img v-bind="{ width: 230, class: 'mx-2 py-2' }"
+                    :src="require('../../assets/Banners/banerV2.jpeg')"
+                    alt="Left image">
+              </b-img>
+              <b-img v-bind="{ width: 230, class: 'mx-2 py-1' }"
+                    :src="require('../../assets/Banners/banerV1.jpeg')"
+                    alt="Left image">
+              </b-img>
+              <b-img  v-bind="{ width: 230, class: 'mx-2 py-2' }"
+                    :src="require('../../assets/Banners/banerV3.jpeg')"
+                    alt="Left image">
+              </b-img>
+            </div>
+          </b-col>
+          </b-row>
         </card>
       </div>
     </div>
@@ -85,6 +113,14 @@ import axios from 'axios'
           } 
         }).catch(() => {})
         this.loader = false
+      },
+      paginaContacto(fundacion) {
+        this.$router.push({
+          name: 'contacto',
+          params: {
+            fundacion: fundacion
+          }
+        })
       }
     },
     async created () {

@@ -29,6 +29,7 @@
                 :src="item.foto_mascota_ruta"
                 alt="image slot"
                 v-bind="{ width: 150, height: 150, class: 'm1' }"
+                style="height: 600px"
               ></b-img>
             </template>
           </b-carousel-slide>
@@ -36,7 +37,7 @@
             
         </card>
         <b-row>
-          <b-col cols="10">
+          <b-col cols="9">
             <b-card-group deck>
               <b-card bg-variant="success" class="text-center" text-variant="black" :header="mascota.nombreMascota">
                 <b-card-text>
@@ -50,7 +51,7 @@
                 <b-card-text>
                   <p>
                     <b-badge variant="primary" v-if="!sesionActiva">
-                      Si deseas apadrinar o adoptar esta mascota debes iniciar sesión.
+                      Si deseas apadrinar o adoptar esta mascota inicia sesión.
                     </b-badge>
                   </p>
                   <p>
@@ -71,6 +72,19 @@
             </b-card-group>
           </b-col>
           <b-col>
+            <div class="clearfix">
+              <b-badge variant="primary">
+                Espacio publicitario.
+              </b-badge>
+              <b-img  v-bind="{ width: 250, class: 'mx-2 py-2' }"
+                    :src="require('../../assets/Banners/banerV3.jpeg')"
+                    alt="Left image">
+              </b-img>
+              <b-img v-bind="{ width: 250, class: 'mx-2 py-2' }"
+                    :src="require('../../assets/Banners/banerV2.jpeg')"
+                    alt="Left image">
+              </b-img>
+            </div>
           </b-col>
         </b-row>
       </div>

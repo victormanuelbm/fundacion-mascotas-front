@@ -16,7 +16,7 @@
                         <span class="nav-link-inner--text">Tienda</span>
               </b-button>
             </li>
-            <li class="nav-item" v-if="sesionActiva">
+            <li class="nav-item">
               <router-link class="nav-link nav-link-icon" to="/listarFundacion">
                 <i class="fa fa-shopping-bag"></i>
                 <span class="nav-link-inner--text">Fundaciones</span>

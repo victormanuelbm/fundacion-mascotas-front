@@ -15,19 +15,6 @@
                       @sliding-start="onSlideStart"
                       @sliding-end="onSlideEnd"
           >
-
-            <b-carousel-slide caption="Porque mimar a tu mascota es de grandes dueños."
-                              :img-src="require('../assets/Banners/Banner1.png')">
-              <h1>PetBro Store</h1>
-            </b-carousel-slide>
-
-            <b-carousel-slide caption="PetBro"
-                              :img-src="require('../assets/Banners/Banner2.png')">
-            </b-carousel-slide>
-            <b-carousel-slide caption="Fundación Huellitas"
-                              img-src="https://www.65ymas.com/uploads/s1/65/73/5/bigstock-dog-beagle-having-fun-running-294325987-1.jpeg"
-            ></b-carousel-slide>
-
             <!-- Slides with custom text -->
             <b-carousel-slide caption="Fundación Huellitas"
                               :img-src="fundacion.nombrepropietario"
@@ -40,7 +27,7 @@
     </div>
 
     <b-row>
-      <b-col cols="10">
+      <b-col cols="9">
         <b-card-group columns>
           <b-card
             v-for="(mascota, index) in mascotas"
@@ -55,7 +42,26 @@
         </b-card-group>
       </b-col>
 
-      <b-col></b-col>
+      <b-col>
+        <div class="clearfix">
+          <b-badge variant="primary">
+            Espacio publicitario.
+          </b-badge>
+          <b-img v-bind="{ width: 250, class: 'mx-2' }"
+                 :src="require('../assets/Banners/banerV1.jpeg')"
+                 alt="Left image"
+                 class="my-2">
+          </b-img>
+          <b-img v-bind="{ width: 250, class: 'mx-1' }"
+                 :src="require('../assets/Banners/banerV2.jpeg')"
+                 alt="Left image">
+          </b-img>
+          <b-img  v-bind="{ width: 250, class: 'mx-1' }"
+                 :src="require('../assets/Banners/banerV3.jpeg')"
+                 alt="Left image">
+          </b-img>
+        </div>
+      </b-col>
     </b-row>
   </div>
 </template>

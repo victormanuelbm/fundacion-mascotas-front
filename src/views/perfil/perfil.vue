@@ -244,7 +244,6 @@ import axios from 'axios'
         },
         async apiTipoUsuario () {},
         validacion () {
-            console.log(this.model)
             if (this.validarNombres && this.validarApellidos && this.validarNumeroDocumento && this.validarEmail && this.validarFechaNacimiento) {
                 return true
             }
