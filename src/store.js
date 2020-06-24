@@ -116,6 +116,7 @@ export default new Vuex.Store({
         },
         setSesionActiva(state, sesionActiva) {
             state.sesionActiva = sesionActiva
+            localStorage.setItem('sesionActiva', JSON.stringify(this.state.sesionActiva))
         }
     },
     actions: {

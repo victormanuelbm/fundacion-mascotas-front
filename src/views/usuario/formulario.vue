@@ -7,7 +7,7 @@
                         <div slot="header" class="bg-white border-0">
                             <div class="row align-items-center">
                                 <div class="col-8">
-                                    <h3 class="mb-0">Formulario de Mascotas</h3>
+                                    <h3 class="mb-0">Formulario de Usuarios</h3>
                                 </div>
                             </div>
                         </div>
@@ -61,7 +61,7 @@
                                             </div>
                                             <div class="col-lg-4">
                                                 <base-input alternative=""
-                                                            label="Correo"
+                                                            label="Correo1"
                                                             placeholder="heystyles@example.com"
                                                             input-classes="form-control-alternative"
                                                             v-model="model.correo"

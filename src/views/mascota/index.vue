@@ -37,11 +37,14 @@
                                     {{ (fundaciones.find(fundacion => { return fundacion.idFundacion == data.item.idFundacion } )).nombreFundacion }}
                                 </template>
                                 <template slot="historial" slot-scope="data">
-                                    <base-button size="sm" outline type="success" @click="formularioHistorial(data.item)" >
-                                    <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                                    <base-button size="sm" outline type="success" @click="resetModal(data.item.idMascota)" v-b-modal.modal>
+                                        <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                                    </base-button>
+                                    <base-button size="sm" outline type="info" @click="verHistorialMascota()">
+                                        <i class="fa fa-history" aria-hidden="true"></i>
                                     </base-button>
                                     <base-button size="sm" outline type="danger" @click="eliminarMascota(data.item)" >
-                                    <i class="fa fa-trash" aria-hidden="true"></i>
+                                        <i class="fa fa-trash" aria-hidden="true"></i>
                                     </base-button>
                                     <b-button size="sm" type="secondary" @click="mostrarImagenMascote(data)" class="mr-2">
                                         {{ data.detailsShowing ? 'Ocultar' : 'Ver'}}
@@ -55,6 +58,40 @@
                                     </b-row>
                                 </template>
                             </b-table>
+                            <b-modal @ok="handleOk" id="modal" title="Registro Historial Mascota" ok-title="Registrar" cancel-title="Cancelar">
+                                <base-input alternative=""
+                                                        label="Fecha del Historial"
+                                                        input-classes="form-control-alternative"
+                                                        :valid="validarFechaHistorialMascota">
+                                                <flat-picker slot-scope="{focus, blur}"
+                                                            @on-open="focus"
+                                                            @on-close="blur"
+                                                            :config="{allowInput: true}"
+                                                            class="form-control datepicker"
+                                                            placeholder="Fecha de Revisión"
+                                                            v-model="historialMascota.fechaHistorialMascota">
+                                                </flat-picker>
+                                </base-input>
+                                <base-input alternative=""
+                                                        label="Observación"
+                                                        placeholder="Observación"
+                                                        input-classes="form-control-alternative"
+                                                        v-model="historialMascota.Observacion"
+                                                        :valid="validarObservacion"
+                                            />
+                                <base-input alternative=""
+                                                        label="Descripción"
+                                                        input-classes="form-control-alternative" 
+                                                        :valid="validarDescripcion">
+                                    <b-form-textarea
+                                                    alternative=""
+                                                    placeholder="Descripción del historial"
+                                                    v-model="historialMascota.descripcion"
+                                                    rows="6"
+                                                    no-resize
+                                    ></b-form-textarea>
+                                </base-input>
+                            </b-modal>
                         </template>
                     </card>
                 </div>
@@ -63,6 +100,7 @@
     </div>
 </template>
 <script>
+import flatPicker from 'vue-flatpickr-component'
 import 'flatpickr/dist/flatpickr.css'
 import axios from 'axios'
 import {mapState} from 'vuex'
@@ -70,7 +108,8 @@ import foto from './foto'
 
   export default {
     components: {
-        foto
+        foto,
+        flatPicker
     },
     name: 'index',
     data() {
@@ -87,6 +126,13 @@ import foto from './foto'
             { key: 'fundacion', label: 'Fundacion' },
             { key: 'historial', label: 'Opciones'}
         ],
+        historialMascota: {
+            idHistorialMascota: undefined,
+            fechaHistorialMascota: '',
+            descripcion: '',
+            Observacion: '',
+            idMascota: undefined
+        },
         fundaciones: [
         ],
         especies: [],
@@ -99,10 +145,77 @@ import foto from './foto'
       }
     },
     computed: {
-        ...mapState(['servidor'])
+        ...mapState(['servidor']),
+        validarDescripcion () {
+            if (this.historialMascota.descripcion === '') {
+                return false
+            }
+            else if (this.historialMascota.descripcion === undefined) {
+                return undefined
+            }
+            return true
+        },
+        validarObservacion () {
+            if (this.historialMascota.Observacion === '') {
+                return false
+            }
+            else if (this.historialMascota.Observacion === undefined) {
+                return undefined
+            }
+            return true
+        },
+        validarFechaHistorialMascota () {
+            if (this.historialMascota.fechaHistorialMascota === '') {
+                return false
+            }
+            else if (this.historialMascota.fechaHistorialMascota === undefined) {
+                return undefined
+            }
+            return true
+        }
     },
     methods: {
         async listar () {},
+        async handleOk() {
+            console.log(this.historialMascota)
+            if (!this.validacion()) {
+                this.$toast.info({
+                    title: 'No se puede guardar cambios del historial',
+                    message: 'Existen campos vacios o no validos dentro del formulario'
+                })
+                return
+            } else {
+                await axios.post(this.servidor + 'HistorialMascotaController_Insert.php', this.historialMascota)
+                .then(response => {
+                    this.$toast.success({
+                        title: 'Registro Exitoso',
+                        message: 'Se registro el historial correctamente'
+                    })
+                })
+                .catch(error => {
+                    this.$toast.Error({
+                        title: 'Error',
+                        message: 'No se puede guardar cambios del historial'
+                    })
+                    return
+                });
+            }
+        },
+        validacion () {
+            if (this.validarDescripcion && this.validarFechaHistorialMascota && this.validarObservacion) {
+                return true
+            }
+            return false
+        },
+        resetModal(idM) {
+            this.historialMascota = { 
+                idHistorialMascota: undefined,
+                fechaHistorialMascota: undefined,
+                descripcion: undefined,
+                Observacion: undefined,
+                idMascota: idM
+            }
+        },
         abrirFormularioRegistro () {
             this.$router.push({name: 'registroMascota'})
         },
@@ -124,8 +237,10 @@ import foto from './foto'
                 }
             })
         },
-        formularioHistorial (mascota) {
-            console.log(mascota)
+        verHistorialMascota () {
+            this.$router.push({
+                name: 'historialMascota'
+            })
         },
         async apiMascotas () {
             this.loader = true

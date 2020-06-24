@@ -30,8 +30,9 @@
 
             <!-- Slides with custom text -->
             <b-carousel-slide caption="Fundación Huellitas"
-                              img-src="https://www.minsalud.gov.co/fotoscarrusel2017/vacunacioon_mascota.jpg">
-              <h1>HOLA AMIGUITOSS!</h1>
+                              :img-src="fundacion.nombrepropietario"
+                              v-for="(fundacion, index) in fundaciones"
+                              :key="index">
             </b-carousel-slide>
           </b-carousel>
         </card>
@@ -54,7 +55,7 @@
         </b-card-group>
       </b-col>
 
-      <b-col>espacio para la publicidad</b-col>
+      <b-col></b-col>
     </b-row>
   </div>
 </template>
@@ -71,7 +72,8 @@ import axios from 'axios'
         },
       slide: 0,
       sliding: null,
-      mascotas: []
+      mascotas: [],
+      fundaciones: []
       }
     },
     computed: {
@@ -136,11 +138,27 @@ import axios from 'axios'
               mascota: item
             }
           })
+      },
+      async apiFundacionRandom () {
+        this.loader = true
+        this.itemsMascota = []
+        axios.get(this.servidor + 'FundacionControllerRamdon.php').then(response => {
+          if (response.data.result) {
+            this.$toast.error({
+              title: 'Información',
+              message: response.data.result
+            })
+          } else {
+            this.fundaciones = response.data
+          }
+        }).catch(() => {})
+        this.loader = false
       }
     },
-    created () {
+    async created () {
       // this.$store.commit('cerrarSesion')
-      this.apiMascotasrandom()
+      await this.apiMascotasrandom()
+      await this.apiFundacionRandom()
     }
   }
 </script>

@@ -59,7 +59,7 @@ const router = new Router({
           meta: { requiresAuth: true }
         },
         {
-          path: '/usuario',
+          path: 'usuario/',
           name: 'usuario',
           component: () => import('./views/usuario/index.vue'),
           meta: { requiresAuth: true }
@@ -141,6 +141,23 @@ const router = new Router({
           name: 'listarFundacion',
           props: true,
           component: () => import('./views/fundacion/listarFundacion.vue')
+        },
+        {
+          path: '/historialMascota/registro',
+          name: 'registroHistorialMascota',
+          component: () => import('./views/historial/formulario.vue'),
+          props: (route) => ({ mascota: route.params.mascota })
+        },
+        {
+          path: '/historialMascota',
+          name: 'historialMascota',
+          component: () => import('./views/historial/index.vue')
+        },
+        {
+          path: '/historialMascota/modificar',
+          name: 'modificarHistorialMascota',
+          component: () => import('./views/historial/formulario.vue'),
+          props: (route) => ({ historial: route.params.historial })
         }
       ]
     },

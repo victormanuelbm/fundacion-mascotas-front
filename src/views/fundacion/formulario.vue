@@ -235,10 +235,10 @@ import VueUploadMultipleImage from 'vue-upload-multiple-image'
                         title: 'Modificación Exitosa',
                         message: 'Se modifico la fundacion correctamente'
                     })
-                    this.insertarImagenes(response.data[0])
+                    this.insertarImagenes(this.fundacion.idFundacion)
                 })
                 .catch(() => {
-                    this.$toast.Error({
+                    this.$toast.error({
                         title: 'Error',
                         message: 'No se puede modificar cambios de la fundación'
                     })
@@ -251,7 +251,6 @@ import VueUploadMultipleImage from 'vue-upload-multiple-image'
                         title: 'Registro Exitoso',
                         message: 'Se registro la fundación correctamente'
                     })
-                    console.log(response.data)
                     this.insertarImagenes(response.data[0])
                 })
                 .catch(() => {

@@ -71,18 +71,10 @@
             </b-card-group>
           </b-col>
           <b-col>
-            espacio para la publicidad
           </b-col>
         </b-row>
-
       </div>
     </div>
-
-    <b-row>
-      <b-col cols="10">
-        formulario mascoitas
-      </b-col>
-    </b-row>
   </div>
 </template>
 <script>
