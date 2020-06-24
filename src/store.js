@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import moment from 'moment'
+import auth0 from 'auth0-js'
+import router from './router'
 
 Vue.use(Vuex)
 export default new Vuex.Store({
@@ -10,6 +12,7 @@ export default new Vuex.Store({
         servidorProducto: 'http://ec2-54-234-226-153.compute-1.amazonaws.com:9030/',
         servidorFactura: 'http://ec2-54-234-226-153.compute-1.amazonaws.com:9040/',
         servidorNotificacion: 'http://ec2-54-234-226-153.compute-1.amazonaws.com:9060/notificacion/',
+        servidor: 'http://3.211.250.73/adopet-ufps/controller/',
         menu: undefined,
         usuarios: [
             {
@@ -57,23 +60,17 @@ export default new Vuex.Store({
             {id: '5', nombre: 'modificar-cargos', descripcion: 'Poder modificar cargos'},
             {id: '6', nombre: 'eliminar-cargos', descripcion: 'Poder eliminar cargos'},
         ],
-        notificaciones: 0
+        notificaciones: 0,
+        userIsAuthorize: false,
+        auth0: new auth0.WebAuth({
+            domain: process.env.VUE_APP_AUTH0_CONFIG_DOMAIN,
+            clientID: process.env.VUE_APP_AUTH0_CONFIG_CLIENTID,
+            redirecUri: process.env.VUE_APP_DOMAINURL + '/auth0callback',
+            responseType: process.env.VUE_APP_AUTH0_CONFIG_RESPONSETYPE,
+            scope: process.env.VUE_APP_AUTH0_CONFIG_SCOPE
+        })
     },
     mutations: {
-        cambiarEstadoCuenta(state, correo) {
-            state.usuarios.forEach(element => {
-                if (correo === element.correo) {
-                    element.estadoCuenta = true
-                    state.sesionActiva = element
-                }
-            })
-        },
-        cerrarSesion (state) {
-            state.usuarios.forEach(element => {
-                element.estadoCuenta = false
-            })
-            state.sesionActiva = undefined
-        },
         modificarUsuario (state, usuario) {
             const nuevos = []
             state.usuarios.forEach(element => {
@@ -114,11 +111,49 @@ export default new Vuex.Store({
         iniciarSesion (state, hijos) {
             state.menu = hijos
         },
-        async consultarSesion (state, usuario) {
-            state.sesionActiva = usuario
+        setUserIsAuthenticated(state, replacement) {
+            state.userIsAuthorize = replacement
+        },
+        setSesionActiva(state, sesionActiva) {
+            state.sesionActiva = sesionActiva
+            localStorage.setItem('sesionActiva', JSON.stringify(this.state.sesionActiva))
         }
     },
     actions: {
-  
+        setSesionActiva() {
+            
+        },
+        auth0Login(context) {
+            context.state.auth0.authorize()
+        },
+        auth0HandleAuthentication (context) {
+            context.state.auth0.parseHash((err, authResult) => {
+                if (authResult && authResult.accessToken && authResult.idToken) {
+                    const expiresAt = JSON.stringify(authResult.expiresIn * 1000 + new Date().getTime())
+                    this.state.sesionActiva = {
+                        nombreUsuario: authResult.idTokenPayload.given_name,
+                        apellidoUsuario: authResult.idTokenPayload.family_name,
+                        correo: authResult.idTokenPayload.email,
+                        foto: authResult.idTokenPayload.picture
+                    }
+                    localStorage.setItem('access_token', authResult.accessToken)
+                    localStorage.setItem('id_token', authResult.idToken)
+                    localStorage.setItem('expires_at', expiresAt)
+                    localStorage.setItem('sesionActiva', JSON.stringify(this.state.sesionActiva))
+                    router.replace('/perfil')
+
+                } else if (err){
+                    alert('Login fallido')
+                    router.replace('/login')
+                }
+            })
+        },
+        auth0Logout () {
+            localStorage.removeItem('access_token')
+            localStorage.removeItem('id_token')
+            localStorage.removeItem('expires_at')
+            localStorage.removeItem('sesionActiva')
+            window.location.href = process.env.VUE_APP_DOMAINURL + '/login'
+        }
     }
 })

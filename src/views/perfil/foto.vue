@@ -1,6 +1,6 @@
 <template>
     <div class="clearfix">
-        <b-img v-bind="foto" fluid-grow rounded="circle" right/>
+        <b-img :src="imagen" fluid-grow rounded="circle" right/>
     </div>
 </template>
 <script>
@@ -9,13 +9,6 @@ export default {
   components: {},
   data() {
       return {
-          foto: {
-              src: this.imagen,
-              blankColor: '#777',
-              width: 75,
-              height: 75,
-              class: 'm1'
-          }
       }
   }
 }

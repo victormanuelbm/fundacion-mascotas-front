@@ -7,9 +7,9 @@
          ]">
         <div :class="containerClasses">
             <slot name="brand">
-                <router-link :to="$route.path"
+                <router-link to="/login"
                              class="h4 mb-0 text-white text-uppercase d-none d-lg-inline-block">
-                    {{$route.name}}
+                    <b-img v-bind="mainProps" :src="require('../assets/logo.png')" alt="Circle image"></b-img>
                 </router-link>
             </slot>
             <navbar-toggle-button v-if="showToggleButton"
@@ -75,7 +75,8 @@
     },
     data() {
       return {
-        toggled: false
+        toggled: false,
+        mainProps: { width: 60, height: 70, class: 'm1' }
       };
     },
     methods: {

@@ -26,17 +26,23 @@
                                         </div>
                                         <div class="col-lg-4">
                                             <base-input alternative=""
-                                                        label="Edad"
-                                                        placeholder="Edad de la Mascota"
-                                                        input-classes="form-control-alternative"
-                                                        v-model="model.edadMascota"
-                                                        :valid="validarEdad"
-                                            />
+                                                       label="Fecha de Nacimiento"
+                                                       placeholder="Fecha de Nacimiento"
+                                                       input-classes="form-control-alternative"
+                                                        :valid="validarFechaNacimiento">
+                                                <flat-picker slot-scope="{focus, blur}"
+                                                             @on-open="focus"
+                                                             @on-close="blur"
+                                                             :config="{allowInput: true}"
+                                                             class="form-control datepicker"
+                                                             v-model="model.edadMascota">
+                                                </flat-picker>
+                                            </base-input>
                                         </div>
                                         <div class="col-lg-4">
                                             <base-input label="Especie" :valid="validarEspecie">
                                                 <select class="form-control" v-model="model.idEspecie">
-                                                    <option v-for="especie in especies" :key="especie.idEspecie" :value="especie.idEspecie" >{{ especie.nombre }}</option>
+                                                    <option v-for="especie in especies" :key="especie.idEspecie" :value="especie.idEspecie" >{{ especie.nombreEspecie }}</option>
                                                 </select>
                                             </base-input>
                                         </div>
@@ -48,16 +54,9 @@
                                             </base-input>
                                         </div>
                                         <div class="col-lg-4">
-                                            <base-input label="Disponibilidad" :valid="validarDisponibilidad">
-                                                <select class="form-control" v-model="model.disponibilidadMascota" >
-                                                    <option v-for="disponibilidad in tiposDisponibilidad" :key="disponibilidad" :value="disponibilidad" >{{ disponibilidad }}</option>
-                                                </select>
-                                            </base-input>
-                                        </div>
-                                        <div class="col-lg-4">
                                             <base-input label="Fundación" :valid="validarFundacion">
                                                 <select class="form-control" v-model="model.idFundacion">
-                                                    <option v-for="fundacion in fundaciones" :key="fundacion.idFundacion" :value="fundacion.idFundacion" >{{ fundacion.nombre }}</option>
+                                                    <option v-for="fundacion in fundaciones" :key="fundacion.idFundacion" :value="fundacion.idFundacion" >{{ fundacion.nombreFundacion }}</option>
                                                 </select>
                                             </base-input>
                                         </div>
@@ -77,22 +76,20 @@
                                             </base-input>
                                         </div>
                                         <div class="col-lg-4">
-                                            <base-input label="Veterinaria" :valid="validarVeterinaria">
-                                                <select class="form-control" v-model="model.idVeterinaria">
-                                                    <option v-for="veterinaria in veterinarias" :key="veterinaria.idVeterinaria" :value="veterinaria.idVeterinaria" >{{ veterinaria.nombre }}</option>
-                                                </select>
-                                            </base-input>
-                                        </div>
-                                        <div class="col-lg-4">
                                             <base-input alternative=""
                                                         label="Foto de la Mascota"
                                                         input-classes="form-control-alternative">
-                                                <b-form-file
-                                                    @change="ingresoFile"
-                                                    class="btn btn-primary btn-sm" plain
-                                                    accept=".jpg, .png, .gif, .jpeg"
-                                                    placeholder="Escojer foto..."
-                                                    browse-text="Buscar"/>
+                                                <vue-upload-multiple-image
+                                                    @upload-success="uploadImageSuccess"
+                                                    @before-remove="beforeRemove"
+                                                    @edit-image="editImage"
+                                                    :data-images="images"
+                                                    idUpload="myIdUpload"
+                                                    editUpload="myIdEdit"
+                                                    dragText="Seleccione o arrastre una foto..."
+                                                    browseText="Haz click aqui"
+                                                    :maxImage="3"
+                                                ></vue-upload-multiple-image>
                                             </base-input>
                                         </div>
                                     </div>
@@ -111,9 +108,14 @@
 <script>
 import flatPicker from 'vue-flatpickr-component'
 import 'flatpickr/dist/flatpickr.css'
+import axios from 'axios'
+import {mapState} from 'vuex'
+import VueUploadMultipleImage from 'vue-upload-multiple-image'
+
   export default {
     components: {
-      flatPicker
+      flatPicker,
+      VueUploadMultipleImage
     },
     name: 'registro',
     props: {
@@ -127,13 +129,13 @@ import 'flatpickr/dist/flatpickr.css'
         model: {
             idMascota: undefined,
             nombreMascota: '',
+            idEspecie: '',
             edadMascota: '',
             sexoMascota: '',
-            diponibilidadMascota: '',
             fechaIngreso: '',
-            fechaSalida: '',
             idFundacion: '',
-            idVeterinaria: ''
+            idVeterinaria: '',
+            file: ''
         },
         fotografia: {
             base64: '',
@@ -141,25 +143,20 @@ import 'flatpickr/dist/flatpickr.css'
             extension: ''
         },
         imagen: undefined,
-        fundaciones: [
-            { idFundacion: '1', nombre: 'Fundacion las Puertas del Cielo' },
-            { idFundacion: '2', nombre: 'Lo que el Agua se Llevo' },
-            { idFundacion: '3', nombre: 'El Espanta-Tiburones' }
-        ],
-        especies: [
-            { idEspecie: '1', nombre: 'Mamifero Heterosexual' },
-            { idEspecie: '2', nombre: 'Reptil' },
-            { idEspecie: '3', nombre: 'Pez' }
-        ],
+        fundaciones: [],
+        especies: [],
         veterinarias: [
             { idVeterinaria: '1', nombre: 'Vec-terinaria' },
             { idVeterinaria: '2', nombre: 'Pet-terinaria' }
         ],
-        tiposSexo: ['Asexual', 'Macho', 'Hembra'],
-        tiposDisponibilidad: ['Disponible', 'No Disponible'],
+        tiposSexo: ['Macho', 'Hembra'],
+        tiposDisponibilidad: ['1', '0'],
+        listaFotos: [],
+        images: []
       }
     },
     computed: {
+        ...mapState(['servidor']),
         validarNombre () {
             if (this.model.nombreMascota === '') {
                 return false
@@ -187,15 +184,6 @@ import 'flatpickr/dist/flatpickr.css'
             }
             return true
         },
-        validarDisponibilidad () {
-            if (this.model.disponibilidadMascota === '' ) {
-                return false
-            }
-            else if (this.model.disponibilidadMascota === undefined) {
-                return undefined
-            }
-            return true
-        },
         validarFundacion () {
             if (this.model.idFundacion === '' ) {
                 return false
@@ -214,11 +202,11 @@ import 'flatpickr/dist/flatpickr.css'
             }
             return true
         },
-        validarVeterinaria () {
-            if (this.model.idVeterinaria === '' ) {
+        validarFechaNacimiento () {
+            if (this.model.edadMascota === '') {
                 return false
             }
-            else if (this.model.idVeterinaria === undefined) {
+            else if (this.model.edadMascota === undefined) {
                 return undefined
             }
             return true
@@ -233,10 +221,9 @@ import 'flatpickr/dist/flatpickr.css'
             return true
         },
     },
+    watch : {},
     methods: {
-        ingresoFile () {},
         subirImagen () {},
-        async actualizarFoto () {},
         async guardarCambios () {
             if (!this.validacion()) {
                 this.$toast.info({
@@ -244,22 +231,107 @@ import 'flatpickr/dist/flatpickr.css'
                     message: 'Existen campos vacios o no validos dentro del formulario'
                 })
                 return
-            } else {
-                this.$toast.success({
-                    title: 'Registro Exitoso',
-                    message: 'Se registro la mascota correctamente'
+            }
+            if (this.mascota) {
+                this.model.disponibilidadMascota = undefined
+                this.model.fechaSalida = undefined
+                await axios.post(this.servidor + 'MascotaController_Edit.php', this.model)
+                .then(() => {
+                    this.$toast.success({
+                        title: 'Modificación Exitosa',
+                        message: 'Se modifico la mascota correctamente'
+                    })
+                    this.insertarImagenes(this.model.idMascota)
                 })
+                .catch(() => {
+                    this.$toast.Error({
+                        title: 'Error',
+                        message: 'No se puede modificar cambios de la mascota'
+                    })
+                    return
+                });
+            } else {
+                await axios.post(this.servidor + 'MascotaController_Insert.php', this.model).then(response => {
+                    this.$toast.success({
+                        title: 'Registro Exitoso',
+                        message: 'Se registro la mascota correctamente'
+                        })
+                        this.insertarImagenes(response.data)
+                        this.$router.push('/mascota')
+                    }).catch(() => {
+                        this.$toast.error({
+                            title: 'Error',
+                            message: 'No se puede guardar cambios de la mascota'
+                        })
+                        return
+                    });
             }
         },
         validacion () {
-            if (this.validarNombre && this.validarEdad && this.validarSexo && this.validarDisponibilidad
-            && this.validarFundacion && this.validarEspecie && this.validarVeterinaria && this.validarFechaIngreso) {
+            if (this.validarNombre && this.validarEdad && this.validarSexo && this.validarFundacion
+                    && this.validarEspecie && this.validarFechaIngreso) {
                 return true
             }
             return false
+        },
+        ingresoFile (event) {
+            this.imagen = event.target.files[0]
+        },
+        async insertarImagenes (idMascota) {
+                var formDa = new FormData()
+                const arrayFotos = []
+                if (this.listaFotos && this.listaFotos.length > 0) {
+                    this.listaFotos.forEach((foto, index) => {
+                        formDa.append('foto_mascota_ruta_' + (index + 1), foto.path)
+                    })
+                }
+                formDa.append('idMascota', idMascota)
+                await axios.post(this.servidor + 'FotoController_Insert_1.php', formDa)
+        },
+        uploadImageSuccess(formData, index, fileList) {
+            this.listaFotos = fileList
+        },
+        beforeRemove (index, done, fileList) {
+            done()
+            this.listaFotos = fileList
+        },
+        editImage (formData, index, fileList) {
+            this.listaFotos = fileList
+        },
+        async getApiFundacion () {
+            this.fundaciones = []
+            await axios.get(this.servidor + 'FundacionController_ListAll.php').then(response => {
+                if (response.data) {
+                    response.data.forEach(fundacion => {
+                        if (!fundacion.msg) {
+                            this.fundaciones.push(fundacion)
+                        }
+                    })
+                }
+            }).catch(() => {
+                this.$toast.Error({
+                    title: 'Error',
+                    message: 'No se puede modificar cambios de la mascota'
+                })
+                return
+            });
+        },
+        async getApiEspecie () {
+            this.especies = []
+            await axios.get(this.servidor + 'EspecieController_ListAll.php').then(response => {
+                if (response.data) {
+                    response.data.forEach(especie => {
+                        if (!especie.msg) {
+                            this.especies.push(especie)
+                        }
+                    })
+                }
+            })
         }
     },
     created: function() {
+        this.getApiFundacion()
+        this.getApiEspecie()
         if (this.mascota) {
             this.model = {
                 ...this.mascota

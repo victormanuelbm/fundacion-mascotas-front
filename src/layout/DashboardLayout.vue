@@ -43,10 +43,19 @@
         menu: [
           { nombre: 'Perfil', icono: 'fa fa-user', path: '/perfil' },
           { nombre: 'Mascota', icono: 'fa fa-paw', path: '/mascota' },
+<<<<<<< HEAD
           { nombre: 'Usuario', icono: 'fa fa-users', path: '/usuario' },
            { nombre: 'Convenio', icono: 'fa fa-handshake', path: '/convenio' },
           { nombre: 'Contacto', icono: 'fa fa-inbox', path: '/contacto' }
          
+=======
+          { nombre: 'Historial Mascota', icono: 'fa fa-building', path: '/historialMascota' },
+          { nombre: 'Usuario', icono: 'fa fa-users', path: '/usuario' },
+          { nombre: 'donacion', icono: 'fa fa-gift', path: '/donacion' },
+          { nombre: 'albergue', icono: 'fa fa-hospital', path: '/albergue' },
+          { nombre: 'fundacion', icono: 'fa fa-building', path: '/fundacion' }
+
+>>>>>>> origin
         ]
       };
     },
@@ -66,7 +75,8 @@
         this.$router.push('/')
         return
       } else {
-        axios.defaults.headers.common['usuario'] = this.sesionActiva.numeroDocumento
+        // axios.defaults.headers.common['usuario'] = this.sesionActiva.numeroDocumento
+        // axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*'
       }
     }
   };
